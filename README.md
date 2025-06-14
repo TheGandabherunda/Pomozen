@@ -1,8 +1,8 @@
 # Pomozen
 
 **Pomozen** is a modern, open-source Pomodoro timer app designed to boost productivity and focus.  
-It applies the Pomodoro Technique—structuring work into focused intervals (typically 25 minutes)
-followed by short breaks. This systematic approach helps combat mental fatigue, maintain
+It applies the Pomodoro Technique—structuring work into focused intervals (typically 25 minutes)  
+followed by short breaks. This systematic approach helps combat mental fatigue, maintain  
 concentration, and improve efficiency in work or study.
 
 ---
@@ -10,22 +10,22 @@ concentration, and improve efficiency in work or study.
 ## ✨ Key Features
 
 - **📊 Comprehensive Statistics**  
-  Track focus sessions, break times, and productivity patterns. Custom labels help analyze habits
+  Track focus sessions, break times, and productivity patterns. Custom labels help analyze habits  
   across tasks, projects, or moods.
 
 - **⏰ Customizable Reminders**  
-  Stay on track with personalized notifications. Smoothly transition between focus and break
+  Stay on track with personalized notifications. Smoothly transition between focus and break  
   periods.
 
 - **💧 Hydration Reminder**  
   Get timely reminders to drink water and stay hydrated throughout your day.
 
 - **🔆 Glyph Progress Integration**  
-  On supported Android devices, visual Glyph cues show Pomodoro progress at a glance. (See settings
+  On supported Android devices, visual Glyph cues show Pomodoro progress at a glance. (See settings  
   for compatibility.)
 
 - **🧘 Minimal Design**  
-  Clean, focused interface built with minimalism at its core—balanced spacing, calm colors, and no
+  Clean, focused interface built with minimalism at its core—balanced spacing, calm colors, and no  
   distractions.
 
 - **📴 Offline Support**  
@@ -39,7 +39,7 @@ concentration, and improve efficiency in work or study.
 ## 🔐 Privacy First
 
 Pomozen has a **strict no data collection policy**.  
-All session logs and preferences are stored **only on your device**—never sent to external servers
+All session logs and preferences are stored **only on your device**—never sent to external servers  
 or third parties.
 
 ---
@@ -78,5 +78,4 @@ Please read the [Contributing Guide](CONTRIBUTING.md) (coming soon) for details.
 
 ## 📄 License
 
-Pomozen is licensed under the [MIT License](https://opensource.org/licenses/MIT).
-
+Pomozen is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
