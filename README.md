@@ -10,13 +10,13 @@ concentration, and improve efficiency in work or study.
 ## ✨ Key Features
 
 - **📊 Comprehensive Statistics**  
-  Track focus sessions, break times, and productivity patterns. Custom labels help analyze habits  
-  across tasks, projects, or moods.
+  Track focus sessions, break times, and productivity patterns. Custom labels let you track
+  time spent on specific tasks, activities, or anything you want.
 
 - **⏰ Customizable Reminders**  
   Stay on track with personalized notifications. Smoothly transition between focus and break  
   periods.
-
+  
 - **💧 Hydration Reminder**  
   Get timely reminders to drink water and stay hydrated throughout your day.
 
