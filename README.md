@@ -44,9 +44,11 @@ concentration, and improve efficiency in work or study.
 ## 📸 Screenshots
 
 <p float="left">
-  <img src="assets/screenshots/light_mode.png" width="250" />
-  <img src="assets/screenshots/dark_mode.png" width="250" />
-  <img src="assets/screenshots/stats_page.png" width="250" />
+  <img src="assets/screenshots/1.png" width="250" />
+  <img src="assets/screenshots/2.png" width="250" />
+  <img src="assets/screenshots/3.png" width="250" />
+  <img src="assets/screenshots/4.png" width="250" />
+  <img src="assets/screenshots/5.png" width="250" />
 </p>
 
 ---
