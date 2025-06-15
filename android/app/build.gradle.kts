@@ -1,3 +1,12 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -25,10 +34,20 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            // Access properties using .get() or direct access (like propertyName.toString())
+            storeFile = file(keystoreProperties.get("storeFile").toString())
+            storePassword = keystoreProperties.get("storePassword").toString()
+            keyAlias = keystoreProperties.get("keyAlias").toString()
+            keyPassword = keystoreProperties.get("keyPassword").toString()
+        }
+    }
+
     buildTypes {
         release {
-            // Reverted: Using debug signing configuration for release builds
-            signingConfig = signingConfigs.getByName("debug")
+            // IMPORTANT: Changed from "debug" to "release" signingConfig
+            signingConfig = signingConfigs.getByName("release")
 
             isMinifyEnabled = false // Keep false for now, re-enable later if needed
             isShrinkResources = false // Keep false for now, re-enable later if needed
