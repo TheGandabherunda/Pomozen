@@ -2136,7 +2136,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                       trailing: Icon(Icons.open_in_new,
                           size: 20, color: appColors.primary),
                       onTap: () => _launchURL(
-                          'https://example.com/pomozen-privacy-policy'), // Example link
+                          'https://projectsolutus.github.io/Pomozen/privacy_policy'), // Example link
                     ),
                   ],
                 ),
