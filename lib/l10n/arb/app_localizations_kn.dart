@@ -814,8 +814,8 @@ class AppLocalizationsKn extends AppLocalizations {
   String get customIntervalRemoved => 'ಕಸ್ಟಮ್ ಇಂಟರ್ವಲ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ';
 
   @override
-  String get waterReminderEnabled => 'Water reminder enabled.';
+  String get waterReminderEnabled => 'ನೀರು ಕುಡಿಯುವ ಜ್ಞಾಪನೆ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ.';
 
   @override
-  String get waterReminderCancelled => 'Water reminder cancelled.';
+  String get waterReminderCancelled => 'ನೀರು ಕುಡಿಯುವ ಜ್ಞಾಪನೆ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ।';
 }

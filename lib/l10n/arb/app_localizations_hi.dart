@@ -806,8 +806,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get customIntervalRemoved => 'कस्टम इंटरवल हटा दिया गया';
 
   @override
-  String get waterReminderEnabled => 'Water reminder enabled.';
+  String get waterReminderEnabled => 'पानी पीने का रिमाइंडर चालू है।';
 
   @override
-  String get waterReminderCancelled => 'Water reminder cancelled.';
+  String get waterReminderCancelled =>
+      'पानी पीने का रिमाइंडर रद्द कर दिया गया है।';
 }

@@ -271,6 +271,6 @@
   "waterReminderAlarmBody": "आपका शरीर आपका धन्यवाद करेगा",
   "wellness": "कल्याण",
   "customIntervalRemoved": "कस्टम इंटरवल हटा दिया गया",
-  "waterReminderEnabled_hi": "पानी पीने का रिमाइंडर चालू है।",
-  "waterReminderCancelled_hi": "पानी पीने का रिमाइंडर रद्द कर दिया गया है।"
+  "waterReminderEnabled": "पानी पीने का रिमाइंडर चालू है।",
+  "waterReminderCancelled": "पानी पीने का रिमाइंडर रद्द कर दिया गया है।"
 }

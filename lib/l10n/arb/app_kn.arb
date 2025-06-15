@@ -270,6 +270,6 @@
   "waterReminderAlarmBody": "ನಿಮ್ಮ ದೇಹ ನಿಮಗೆ ಧನ್ಯವಾದ ಹೇಳುತ್ತದೆ",
   "wellness": "ಕ್ಷೇಮ",
   "customIntervalRemoved": "ಕಸ್ಟಮ್ ಇಂಟರ್ವಲ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ",
-  "waterReminderEnabled_kn": "ನೀರು ಕುಡಿಯುವ ಜ್ಞಾಪನೆ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ.",
-  "waterReminderCancelled_kn": "ನೀರು ಕುಡಿಯುವ ಜ್ಞಾಪನೆ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ।"
+  "waterReminderEnabled": "ನೀರು ಕುಡಿಯುವ ಜ್ಞಾಪನೆ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ.",
+  "waterReminderCancelled": "ನೀರು ಕುಡಿಯುವ ಜ್ಞಾಪನೆ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ।"
 }
