@@ -67,7 +67,6 @@ or third parties.
 - **Flutter** – UI toolkit for building cross-platform apps
 - **Dart** – Programming language behind Flutter
 - **GetX** – Simple, fast state management and routing
-- *(Local storage solution, e.g., SharedPreferences or Hive, if applicable)*
 
 ---
 
@@ -97,6 +96,13 @@ Please read the [Contributing Guide](CONTRIBUTING.md) (coming soon) for details.
 ## 📄 License
 
 Pomozen is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+---
+
+## 🙌 Credits
+
+- Thanks to [@abisri99](https://github.com/abisri99) for feedback and suggestions.
+- Built with [Flutter](https://flutter.dev), [GetX](https://pub.dev/packages/get), and open-source love
 
 ---
 
