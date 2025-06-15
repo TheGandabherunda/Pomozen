@@ -43,10 +43,14 @@ concentration, and improve efficiency in work or study.
 
 ## 📸 Screenshots
 
-| | | |
-|--|--|--|
-| ![Focus](screenshots/1.png) | ![Settings](screenshots/2.png) | ![Statistics](screenshots/3.png) |
-| ![Hydration](screenshots/4.png) | ![Minimal](screenshots/5.png) | 
+<p align="center">
+  <img src="screenshots/1.png" width="200" />
+  <img src="screenshots/2.png" width="200" />
+  <img src="screenshots/3.png" width="200" />
+  <br/>
+  <img src="screenshots/4.png" width="200" />
+  <img src="screenshots/5.png" width="200" />
+</p>
 
 ---
 
