@@ -90,7 +90,6 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   late Animation<double> _startButtonScaleAnimation;
   late Animation<double> _viewButtonScaleAnimation;
   late Animation<double> _editDeleteIconScaleAnimation;
-  late Animation<double> _addLabelButtonScaleAnimation;
   late Animation<double> _saveButtonScaleAnimation;
   late Animation<double> _cancelButtonScaleAnimation;
 
@@ -178,12 +177,6 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     _editDeleteIconScaleAnimation =
         Tween<double>(begin: 1.0, end: 0.9).animate(CurvedAnimation(
           parent: _editDeleteIconAnimationController,
-          curve: Curves.easeOutCirc,
-          reverseCurve: Curves.easeOutCirc,
-        ));
-    _addLabelButtonScaleAnimation =
-        Tween<double>(begin: 1.0, end: 0.9).animate(CurvedAnimation(
-          parent: _addLabelButtonAnimationController,
           curve: Curves.easeOutCirc,
           reverseCurve: Curves.easeOutCirc,
         ));
@@ -639,7 +632,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                               context,
                               localizations.bestFocusDay,
                               bestFocusDay != null
-                                  ? '${bestFocusDay!.day}/${bestFocusDay!.month}/${bestFocusDay!.year} (${maxFocusMinutesInDay} ${localizations.minutes})'
+                                  ? '${bestFocusDay!.day}/${bestFocusDay!.month}/${bestFocusDay!.year} ($maxFocusMinutesInDay ${localizations.minutes})'
                                   : localizations.notAvailable,
                               appColors.aPurple,
                             ),
@@ -1253,14 +1246,14 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                                 reservedSize: bottomTitlesReservedSize,
                               ),
                             ),
-                            leftTitles: AxisTitles(
+                            leftTitles: const AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: false,
                               ),
                             ),
-                            topTitles: AxisTitles(
+                            topTitles: const AxisTitles(
                                 sideTitles: SideTitles(showTitles: false)),
-                            rightTitles: AxisTitles(
+                            rightTitles: const AxisTitles(
                                 sideTitles: SideTitles(showTitles: false)),
                           ),
                           borderData: FlBorderData(
@@ -1565,7 +1558,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                                 reservedSize: bottomTitlesReservedSize,
                               ),
                             ),
-                            leftTitles: AxisTitles(
+                            leftTitles: const AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: false,
                               ),
@@ -1813,7 +1806,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   _buildSettingText(
                                     session.labelName ??
                                         localizations.unlabeled,
@@ -1822,14 +1815,14 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                                     fontWeight: FontWeight.w500,
                                     fontSize: 12,
                                   ),
-                                  SizedBox(height: 4),
+                                  const SizedBox(height: 4),
                                   _buildSettingText(
                                     '${localizations.completed}: ${session.isCompleted ? localizations.yes : localizations.no}',
                                     context: context,
                                     color: appColors.grey1,
                                     fontSize: 12,
                                   ),
-                                  SizedBox(height: 4),
+                                  const SizedBox(height: 4),
                                   if (session.note != null &&
                                       session.note!.isNotEmpty)
                                     Row(
@@ -1888,7 +1881,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                                       },
                                     ),
                                   ),
-                                  SizedBox(width: 16),
+                                  const SizedBox(width: 16),
                                   GestureDetector(
                                     onTapDown: (_) => _onButtonTapDown(
                                         _editDeleteIconAnimationController),
@@ -1925,7 +1918,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                                       },
                                     ),
                                   ),
-                                  SizedBox(width: 6),
+                                  const SizedBox(width: 6),
                                 ],
                               ),
                             ),
@@ -2691,7 +2684,7 @@ class _CupertinoLabelPickerState extends State<_CupertinoLabelPicker>
                                     .setSelectedStatsLabel(
                                     isAllSessions ? null : label);
                                 final newIndex = labels.indexWhere(
-                                        (l) => l?['name'] == label['name']);
+                                        (l) => l['name'] == label['name']);
                                 _scrollToSelectedLabel(newIndex);
                               },
                               child: Row(

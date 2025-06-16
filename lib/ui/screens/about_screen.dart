@@ -63,7 +63,7 @@ class _AboutScreenState extends State<AboutScreen> {
       scheme: 'mailto',
       path: email,
       query:
-          'subject=$encodedSubject', // Use 'query' for custom parameter string
+      'subject=$encodedSubject', // Use 'query' for custom parameter string
     );
     if (await canLaunchUrl(uri)) {
       await launchUrl(
@@ -323,8 +323,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                   trailing: Icon(Icons.open_in_new,
                       size: 20, color: appColors.primary),
-                  onTap: () => _launchURL(
-                      'https://github.com/ProjectSolutus/Pomozen.git'), // Example link
+                  onTap: () =>
+                      _launchURL(
+                          'https://github.com/ProjectSolutus/Pomozen.git'), // Example link
                 ),
                 ListTile(
                   title: Text(
@@ -339,8 +340,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                   trailing: Icon(Icons.mail_outline,
                       size: 20, color: appColors.primary),
-                  onTap: () => _sendEmail(
-                      'arunuserx@gmail.com', 'Feedback about Pomozen'),
+                  onTap: () =>
+                      _sendEmail(
+                          'arunuserx@gmail.com', 'Feedback about Pomozen'),
                 ),
                 // ListTile(
                 //   title: Text(
@@ -371,8 +373,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                   trailing: Icon(Icons.open_in_new,
                       size: 20, color: appColors.primary),
-                  onTap: () => _launchURL(
-                      'https://projectsolutus.github.io/Pomozen/privacy_policy'), // Example link
+                  onTap: () =>
+                      _launchURL(
+                          'https://projectsolutus.github.io/Pomozen/privacy_policy'), // Example link
                 ),
               ],
             ),

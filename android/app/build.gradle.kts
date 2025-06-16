@@ -17,11 +17,13 @@ android {
     namespace = "org.projectsolutus.pomozen"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
         isCoreLibraryDesugaringEnabled = true
     }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
@@ -36,7 +38,6 @@ android {
 
     signingConfigs {
         create("release") {
-            // Access properties using .get() or direct access (like propertyName.toString())
             storeFile = file(keystoreProperties.get("storeFile").toString())
             storePassword = keystoreProperties.get("storePassword").toString()
             keyAlias = keystoreProperties.get("keyAlias").toString()
@@ -46,16 +47,20 @@ android {
 
     buildTypes {
         release {
-            // IMPORTANT: Changed from "debug" to "release" signingConfig
             signingConfig = signingConfigs.getByName("release")
 
-            isMinifyEnabled = false // Keep false for now, re-enable later if needed
-            isShrinkResources = false // Keep false for now, re-enable later if needed
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            //optimized settings
+            isMinifyEnabled = true          // Enable code obfuscation
+            isShrinkResources = false       // Disable resource shrinking (fixes notifications)
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
-    // --- NEW: ABI Splits Configuration ---
+    // ABI Splits for smaller APK sizes
     splits {
         abi {
             isEnable = true
@@ -64,7 +69,12 @@ android {
             isUniversalApk = true
         }
     }
-    // --- END NEW ---
+
+    //requirement: Disable dependency metadata
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 }
 
 flutter {

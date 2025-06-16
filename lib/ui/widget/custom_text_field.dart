@@ -186,7 +186,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           color: widget.errorBorderColor,
           height: 1.4,
           fontSize: CustomTextField._errorFontSize,
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w400,
         ),
       ),
     );

@@ -36,67 +36,67 @@ class AppSpacing {
 /// Defines consistent text styles for the application UI.
 class AppTextStyles {
   static TextStyle headline1(AppThemeColors colors) => TextStyle(
-    fontFamily: 'OpenRunde',
-    fontSize: 24,
-    height: 1.3,
-    letterSpacing: -0.4,
-    color: colors.grey10,
-    fontWeight: FontWeight.w500,
-  );
+        fontFamily: 'OpenRunde',
+        fontSize: 24,
+        height: 1.3,
+        letterSpacing: -0.4,
+        color: colors.grey10,
+        fontWeight: FontWeight.w500,
+      );
 
   static TextStyle sectionHeader(AppThemeColors colors) => TextStyle(
-    fontFamily: 'OpenRunde',
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    color: colors.grey10,
-  );
+        fontFamily: 'OpenRunde',
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: colors.grey10,
+      );
 
   static TextStyle title(AppThemeColors colors) => TextStyle(
-    fontFamily: 'OpenRunde',
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-    color: colors.grey1,
-  );
+        fontFamily: 'OpenRunde',
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: colors.grey1,
+      );
 
   static TextStyle body(AppThemeColors colors) => TextStyle(
-    fontFamily: 'OpenRunde',
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-    color: colors.grey2,
-  );
+        fontFamily: 'OpenRunde',
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: colors.grey2,
+      );
 
   static TextStyle smallBody(AppThemeColors colors) => TextStyle(
-    fontFamily: 'OpenRunde',
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    color: colors.grey2,
-  );
+        fontFamily: 'OpenRunde',
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: colors.grey2,
+      );
 
   static TextStyle buttonText(AppThemeColors colors) => TextStyle(
-    color: colors.grey10,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'OpenRunde',
-  );
+        color: colors.grey10,
+        fontWeight: FontWeight.w500,
+        fontFamily: 'OpenRunde',
+      );
 
   static TextStyle toolText(AppThemeColors colors) => TextStyle(
-    color: colors.grey8,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'OpenRunde',
-  );
+        color: colors.grey8,
+        fontWeight: FontWeight.w500,
+        fontFamily: 'OpenRunde',
+      );
 
   static TextStyle dialogTitle(AppThemeColors colors) => TextStyle(
-    fontWeight: FontWeight.w600,
-    color: colors.primary,
-  );
+        fontWeight: FontWeight.w600,
+        color: colors.primary,
+      );
 
   static TextStyle dialogContent(AppThemeColors colors) => TextStyle(
-    fontWeight: FontWeight.w500,
-    color: colors.grey1,
-  );
+        fontWeight: FontWeight.w500,
+        color: colors.grey1,
+      );
 
   static TextStyle errorText(AppThemeColors colors) => TextStyle(
-    color: colors.error,
-  );
+        color: colors.error,
+      );
 }
 
 /// A widget that applies a shrink and return-to-normal animation on tap.
@@ -133,8 +133,8 @@ class _AnimatedTapEffectState extends State<AnimatedTapEffect>
       lowerBound: 0.0,
       upperBound: 1.0 - widget.scaleEnd,
     )..addListener(() {
-      setState(() => _scaleTransformValue = 1 - _animationController.value);
-    });
+        setState(() => _scaleTransformValue = 1 - _animationController.value);
+      });
   }
 
   @override
@@ -152,7 +152,7 @@ class _AnimatedTapEffectState extends State<AnimatedTapEffect>
   void _restoreButtonSize() {
     Future.delayed(
       widget.duration,
-          () {
+      () {
         if (mounted) {
           _animationController.reverse();
         }
@@ -222,10 +222,10 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
     );
     _waterReminderBoxScaleAnimation =
         Tween<double>(begin: 1.0, end: 0.9).animate(CurvedAnimation(
-          parent: _waterReminderBoxAnimationController,
-          curve: Curves.easeOutCirc,
-          reverseCurve: Curves.easeOutCirc,
-        ));
+      parent: _waterReminderBoxAnimationController,
+      curve: Curves.easeOutCirc,
+      reverseCurve: Curves.easeOutCirc,
+    ));
   }
 
   @override
@@ -269,7 +269,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
       scheme: 'mailto',
       path: email,
       query:
-      'subject=$encodedSubject', // Use 'query' for custom parameter string
+          'subject=$encodedSubject', // Use 'query' for custom parameter string
     );
     if (await canLaunchUrl(uri)) {
       await launchUrl(
@@ -286,15 +286,15 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
 
   /// Helper widget to build consistent text styles across the screen.
   Widget _buildSettingText(
-      String text, {
-        double fontSize = 16,
-        FontWeight fontWeight = FontWeight.w500,
-        Color? color,
-        TextAlign textAlign = TextAlign.start,
-        int? maxLines,
-        TextOverflow? overflow,
-        required BuildContext context,
-      }) {
+    String text, {
+    double fontSize = 16,
+    FontWeight fontWeight = FontWeight.w500,
+    Color? color,
+    TextAlign textAlign = TextAlign.start,
+    int? maxLines,
+    TextOverflow? overflow,
+    required BuildContext context,
+  }) {
     final appColors = AppTheme.colorsOf(context);
     return Text(
       text,
@@ -331,31 +331,31 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
           title,
           style: AppTextStyles.title(appColors),
         ),
-        SizedBox(height: AppSpacing.small),
+        const SizedBox(height: AppSpacing.small),
         Row(
           children: [
             Expanded(
               child: Obx(() => CustomSliderWithTooltip(
-                min: min.toDouble(),
-                max: max.toDouble(),
-                initialValue: value.value.toDouble(),
-                onChanged: (newValue) {
-                  final int newIntValue = newValue.round();
-                  if (newIntValue != value.value) {
-                    HapticFeedback.lightImpact();
-                  }
-                  onChanged(newValue);
-                },
-                activeColor: appColors.primary,
-                unfocusedActiveColor: appColors.grey10,
-                inactiveColor: appColors.grey3,
-                showValueTooltip: showTooltip,
-                minLabel: labelBuilder(min),
-                maxLabel: labelBuilder(max),
-                labelTextStyle: AppTextStyles.smallBody(appColors),
-                tooltipBackgroundColor: appColors.primary,
-                tooltipTextStyle: AppTextStyles.toolText(appColors),
-              )),
+                    min: min.toDouble(),
+                    max: max.toDouble(),
+                    initialValue: value.value.toDouble(),
+                    onChanged: (newValue) {
+                      final int newIntValue = newValue.round();
+                      if (newIntValue != value.value) {
+                        HapticFeedback.lightImpact();
+                      }
+                      onChanged(newValue);
+                    },
+                    activeColor: appColors.primary,
+                    unfocusedActiveColor: appColors.grey10,
+                    inactiveColor: appColors.grey3,
+                    showValueTooltip: showTooltip,
+                    minLabel: labelBuilder(min),
+                    maxLabel: labelBuilder(max),
+                    labelTextStyle: AppTextStyles.smallBody(appColors),
+                    tooltipBackgroundColor: appColors.primary,
+                    tooltipTextStyle: AppTextStyles.toolText(appColors),
+                  )),
             ),
           ],
         ),
@@ -524,7 +524,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                   size: 24,
                   color: isSelected ? appColors.grey10 : appColors.grey2,
                 ),
-                SizedBox(height: AppSpacing.large),
+                const SizedBox(height: AppSpacing.large),
                 Text(
                   title,
                   textAlign: TextAlign.center,
@@ -586,7 +586,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                         },
                       ),
                     ),
-                    SizedBox(width: AppSpacing.medium),
+                    const SizedBox(width: AppSpacing.medium),
                     Expanded(
                       child: _buildSelectionBox(
                         context: context,
@@ -599,7 +599,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                         },
                       ),
                     ),
-                    SizedBox(width: AppSpacing.medium),
+                    const SizedBox(width: AppSpacing.medium),
                     Expanded(
                       child: _buildSelectionBox(
                         context: context,
@@ -615,7 +615,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                   ],
                 ),
               ),
-              SizedBox(height: AppSpacing.medium),
+              const SizedBox(height: AppSpacing.medium),
             ],
           ),
         );
@@ -724,7 +724,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                         },
                       ),
                     ),
-                    SizedBox(width: AppSpacing.medium),
+                    const SizedBox(width: AppSpacing.medium),
                     Expanded(
                       child: _buildSelectionBox(
                         context: context,
@@ -737,7 +737,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                         },
                       ),
                     ),
-                    SizedBox(width: AppSpacing.medium),
+                    const SizedBox(width: AppSpacing.medium),
                     Expanded(
                       child: _buildSelectionBox(
                         context: context,
@@ -753,7 +753,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                   ],
                 ),
               ),
-              SizedBox(height: AppSpacing.medium),
+              const SizedBox(height: AppSpacing.medium),
             ],
           ),
         );
@@ -770,7 +770,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
   }) {
     final appColors = AppTheme.colorsOf(context);
     final Map<String, Color> availableColors =
-    AppTheme.getNamedColors(Theme.of(context).brightness);
+        AppTheme.getNamedColors(Theme.of(context).brightness);
 
     return AnimatedTapEffect(
       onTap: () {
@@ -879,10 +879,10 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                           ),
                           child: isSelected
                               ? Icon(
-                            Icons.check,
-                            color: _getContrastingTextColor(color),
-                            size: 24,
-                          )
+                                  Icons.check,
+                                  color: _getContrastingTextColor(color),
+                                  size: 24,
+                                )
                               : null,
                         ),
                       );
@@ -890,7 +890,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                   },
                 ),
               ),
-              SizedBox(height: AppSpacing.medium),
+              const SizedBox(height: AppSpacing.medium),
             ],
           ),
         );
@@ -929,7 +929,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
   // NEW: Helper method to show custom interval dialog for water reminder
   Future<void> _showCustomIntervalDialog(BuildContext context,
       AppLocalizations localizations, AppThemeColors appColors) async {
-    TextEditingController _controller = TextEditingController();
+    TextEditingController controller = TextEditingController();
     final settingsService = Get.find<SettingsService>();
 
     return showDialog<void>(
@@ -939,7 +939,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
           backgroundColor: appColors.grey6,
           insetPadding: EdgeInsets.zero,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: MediaQuery.of(dialogContext).size.width * 0.85,
             padding: const EdgeInsets.all(16),
@@ -958,7 +958,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 const SizedBox(height: 16),
                 // Replaced TextField with CustomTextField
                 CustomTextField(
-                  controller: _controller,
+                  controller: controller,
                   hintText: localizations.minutes ?? 'Minutes',
                   fillColor: appColors.grey6,
                   borderColor: appColors.grey4,
@@ -966,7 +966,8 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                   enabledBorderColor: appColors.grey3,
                   textColor: appColors.grey10,
                   hintTextColor: appColors.grey2,
-                  isInputValid: true, // Assuming validity is handled by validator or state
+                  isInputValid: true,
+                  // Assuming validity is handled by validator or state
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
@@ -1002,13 +1003,13 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                       onTap: () {
                         HapticFeedback.lightImpact();
                         final int? customMinutes =
-                        int.tryParse(_controller.text);
+                            int.tryParse(controller.text);
                         if (customMinutes != null && customMinutes > 0) {
                           settingsService
                               .setWaterReminderIntervalMinutes(customMinutes);
                           Fluttertoast.showToast(
                               msg: localizations.waterReminderIntervalSet
-                                  ?.call(customMinutes) ??
+                                      ?.call(customMinutes) ??
                                   'Water reminder interval set to $customMinutes minutes.');
                           Get.back();
                         } else {
@@ -1040,12 +1041,12 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
 
   // New helper widget to build the water reminder interval selector
   Widget _buildWaterReminderIntervalSelector(
-      BuildContext context,
-      AppThemeColors appColors,
-      AppLocalizations localizations,
-      int currentInterval,
-      List<int> availableIntervals,
-      ) {
+    BuildContext context,
+    AppThemeColors appColors,
+    AppLocalizations localizations,
+    int currentInterval,
+    List<int> availableIntervals,
+  ) {
     // Define the dimensions for the custom dropdown box
     const double dropdownBoxWidth = 180;
     const double dropdownBoxHeight = 56;
@@ -1112,9 +1113,11 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                     context: context,
                     // Adjusted position to make it open exactly below the container
                     position: RelativeRect.fromRect(
-                      Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height),
+                      Rect.fromLTWH(
+                          offset.dx, offset.dy, size.width, size.height),
                       Offset.zero & MediaQuery.of(context).size,
-                    ).shift(Offset(0, size.height + AppSpacing.extraSmall)), // Shift down by container height + small spacing
+                    ).shift(Offset(0, size.height + AppSpacing.extraSmall)),
+                    // Shift down by container height + small spacing
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                     constraints: BoxConstraints.tightFor(width: size.width),
@@ -1153,16 +1156,16 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                                       // Revert to a default value (e.g., 30 minutes)
                                       controller.settingsService
                                           .setWaterReminderIntervalMinutes(
-                                          30); // Default to 30 min
+                                              30); // Default to 30 min
                                       Fluttertoast.showToast(
                                           msg: localizations
-                                              .customIntervalRemoved ??
+                                                  .customIntervalRemoved ??
                                               'Custom interval removed. Reverted to 30 minutes.');
                                       Navigator.pop(context); // Close the menu
                                     },
                                     visualDensity: VisualDensity.compact,
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
+                                    constraints: const BoxConstraints(),
                                   ),
                               ],
                             ),
@@ -1228,15 +1231,15 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Obx(() => AnimatedRotation(
-                    turns: _isWaterReminderDropdownOpen.value ? -0.5 : 0.0,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.fastOutSlowIn,
-                    child: Icon(
-                      Icons.arrow_drop_down_rounded,
-                      color: appColors.grey10,
-                      size: 32,
-                    ),
-                  )),
+                        turns: _isWaterReminderDropdownOpen.value ? -0.5 : 0.0,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.fastOutSlowIn,
+                        child: Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: appColors.grey10,
+                          size: 32,
+                        ),
+                      )),
                 ),
               ),
             ),
@@ -1373,7 +1376,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
               localizations.pomodoroTimer,
               style: AppTextStyles.sectionHeader(appColors),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
             Card(
               color: appColors.grey6,
               elevation: 0,
@@ -1385,73 +1388,73 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 child: Column(
                   children: [
                     Obx(() => _buildSliderSettingContent(
-                      context: context,
-                      title: localizations.focusDuration,
-                      value: controller.settingsService.focusDuration,
-                      min: 5,
-                      max: 60,
-                      defaultValue: 25,
-                      labelBuilder: (value) =>
-                      '$value ${localizations.minutesShort}',
-                      onChanged: (value) => controller.settingsService
-                          .setFocusDuration(value.round()),
-                      showTooltip: showSliderTooltips.value,
-                    )),
+                          context: context,
+                          title: localizations.focusDuration,
+                          value: controller.settingsService.focusDuration,
+                          min: 5,
+                          max: 60,
+                          defaultValue: 25,
+                          labelBuilder: (value) =>
+                              '$value ${localizations.minutesShort}',
+                          onChanged: (value) => controller.settingsService
+                              .setFocusDuration(value.round()),
+                          showTooltip: showSliderTooltips.value,
+                        )),
                     Divider(color: appColors.grey5),
                     Obx(() => _buildSliderSettingContent(
-                      context: context,
-                      title: localizations.shortBreak,
-                      value: controller.settingsService.shortBreakDuration,
-                      min: 1,
-                      max: 30,
-                      defaultValue: 5,
-                      labelBuilder: (value) =>
-                      '$value ${localizations.minutesShort}',
-                      onChanged: (value) => controller.settingsService
-                          .setShortBreakDuration(value.round()),
-                      showTooltip: showSliderTooltips.value,
-                    )),
+                          context: context,
+                          title: localizations.shortBreak,
+                          value: controller.settingsService.shortBreakDuration,
+                          min: 1,
+                          max: 30,
+                          defaultValue: 5,
+                          labelBuilder: (value) =>
+                              '$value ${localizations.minutesShort}',
+                          onChanged: (value) => controller.settingsService
+                              .setShortBreakDuration(value.round()),
+                          showTooltip: showSliderTooltips.value,
+                        )),
                     Divider(color: appColors.grey5),
                     Obx(() => _buildSliderSettingContent(
-                      context: context,
-                      title: localizations.longBreak,
-                      value: controller.settingsService.longBreakDuration,
-                      min: 1,
-                      max: 45,
-                      defaultValue: 20,
-                      labelBuilder: (value) =>
-                      '$value ${localizations.minutesShort}',
-                      onChanged: (value) => controller.settingsService
-                          .setLongBreakDuration(value.round()),
-                      showTooltip: showSliderTooltips.value,
-                    )),
+                          context: context,
+                          title: localizations.longBreak,
+                          value: controller.settingsService.longBreakDuration,
+                          min: 1,
+                          max: 45,
+                          defaultValue: 20,
+                          labelBuilder: (value) =>
+                              '$value ${localizations.minutesShort}',
+                          onChanged: (value) => controller.settingsService
+                              .setLongBreakDuration(value.round()),
+                          showTooltip: showSliderTooltips.value,
+                        )),
                     Divider(color: appColors.grey5),
                     Obx(() => _buildSliderSettingContent(
-                      context: context,
-                      title: localizations.sessions,
-                      value: controller.settingsService.totalSessions,
-                      min: 2,
-                      max: 15,
-                      defaultValue: 4,
-                      labelBuilder: (value) =>
-                      '$value ${localizations.sessions}',
-                      onChanged: (value) => controller.settingsService
-                          .setTotalSessions(value.round()),
-                      showTooltip: showSliderTooltips.value,
-                    )),
+                          context: context,
+                          title: localizations.sessions,
+                          value: controller.settingsService.totalSessions,
+                          min: 2,
+                          max: 15,
+                          defaultValue: 4,
+                          labelBuilder: (value) =>
+                              '$value ${localizations.sessions}',
+                          onChanged: (value) => controller.settingsService
+                              .setTotalSessions(value.round()),
+                          showTooltip: showSliderTooltips.value,
+                        )),
                   ],
                 ),
               ),
             ),
 
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             // Notifications and Alerts Settings Section
             Text(
               localizations.notificationsAndAlerts,
               style: AppTextStyles.sectionHeader(appColors),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
             Card(
               color: appColors.grey6,
               elevation: 0,
@@ -1463,63 +1466,63 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 child: Column(
                   children: [
                     Obx(() => _buildSwitchSetting(
-                      context: context,
-                      title: localizations.reminder,
-                      value: controller.settingsService.reminder.value,
-                      onChanged: (value) async {
-                        controller.settingsService.setReminder(value);
-                        if (value) {
-                          final bool granted = await controller
-                              .requestNotificationPermissions();
-                          if (!granted) {
-                            controller.settingsService.setReminder(false);
-                            Fluttertoast.showToast(
-                              msg: localizations
-                                  .notificationPermissionDenied,
-                            );
-                          }
-                        } else {
-                          controller.cancelAllNotifications();
-                        }
-                      },
-                    )),
+                          context: context,
+                          title: localizations.reminder,
+                          value: controller.settingsService.reminder.value,
+                          onChanged: (value) async {
+                            controller.settingsService.setReminder(value);
+                            if (value) {
+                              final bool granted = await controller
+                                  .requestNotificationPermissions();
+                              if (!granted) {
+                                controller.settingsService.setReminder(false);
+                                Fluttertoast.showToast(
+                                  msg: localizations
+                                      .notificationPermissionDenied,
+                                );
+                              }
+                            } else {
+                              controller.cancelAllNotifications();
+                            }
+                          },
+                        )),
                     Obx(() => controller.settingsService.reminder.value
                         ? Column(
-                      children: [
-                        _buildRadioSetting<bool>(
-                          context: context,
-                          title: localizations.notification,
-                          value: false,
-                          groupValue:
-                          controller.settingsService.isAlarm.value,
-                          onChanged: (value) {
-                            if (value != null) {
-                              controller.settingsService
-                                  .setIsAlarm(value);
-                            }
-                          },
-                        ),
-                        _buildRadioSetting<bool>(
-                          context: context,
-                          title: localizations.alarm,
-                          value: true,
-                          groupValue:
-                          controller.settingsService.isAlarm.value,
-                          onChanged: (value) async {
-                            if (value != null) {
-                              controller.settingsService
-                                  .setIsAlarm(value);
-                              final bool enabled = await controller
-                                  .areNotificationsEnabled();
-                              if (!enabled) {
-                                await controller
-                                    .requestNotificationPermissions();
-                              }
-                            }
-                          },
-                        ),
-                      ],
-                    )
+                            children: [
+                              _buildRadioSetting<bool>(
+                                context: context,
+                                title: localizations.notification,
+                                value: false,
+                                groupValue:
+                                    controller.settingsService.isAlarm.value,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    controller.settingsService
+                                        .setIsAlarm(value);
+                                  }
+                                },
+                              ),
+                              _buildRadioSetting<bool>(
+                                context: context,
+                                title: localizations.alarm,
+                                value: true,
+                                groupValue:
+                                    controller.settingsService.isAlarm.value,
+                                onChanged: (value) async {
+                                  if (value != null) {
+                                    controller.settingsService
+                                        .setIsAlarm(value);
+                                    final bool enabled = await controller
+                                        .areNotificationsEnabled();
+                                    if (!enabled) {
+                                      await controller
+                                          .requestNotificationPermissions();
+                                    }
+                                  }
+                                },
+                              ),
+                            ],
+                          )
                         : const SizedBox.shrink()),
                     Obx(() {
                       final dailyReminderEnabled =
@@ -1528,11 +1531,11 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                                   null;
                       final TimeOfDay? selectedTime = dailyReminderEnabled
                           ? TimeOfDay(
-                        hour:
-                        settingsService.dailyReminderTimeHour.value!,
-                        minute: settingsService
-                            .dailyReminderTimeMinute.value!,
-                      )
+                              hour:
+                                  settingsService.dailyReminderTimeHour.value!,
+                              minute: settingsService
+                                  .dailyReminderTimeMinute.value!,
+                            )
                           : null;
 
                       return _buildSwitchSetting(
@@ -1548,22 +1551,22 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                                 return Theme(
                                   data: Theme.of(context).copyWith(
                                     colorScheme:
-                                    Theme.of(context).colorScheme.copyWith(
-                                      primary: appColors.primary,
-                                      onPrimary: appColors.grey10,
-                                      surface: appColors.grey6,
-                                      onSurface: appColors.grey10,
-                                    ),
+                                        Theme.of(context).colorScheme.copyWith(
+                                              primary: appColors.primary,
+                                              onPrimary: appColors.grey10,
+                                              surface: appColors.grey6,
+                                              onSurface: appColors.grey10,
+                                            ),
                                     textButtonTheme: TextButtonThemeData(
                                       style: TextButton.styleFrom(
                                         textStyle:
-                                        AppTextStyles.buttonText(appColors),
+                                            AppTextStyles.buttonText(appColors),
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: AppSpacing.medium,
                                             vertical: AppSpacing.small),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(8),
+                                              BorderRadius.circular(8),
                                         ),
                                         foregroundColor: appColors.grey10,
                                       ),
@@ -1579,7 +1582,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                               controller.scheduleDailyReminder();
                               Fluttertoast.showToast(
                                   msg: localizations.dailyReminderSet
-                                      ?.call(picked.format(context)) ??
+                                          ?.call(picked.format(context)) ??
                                       'Daily reminder set for ${picked.format(context)}');
                             } else {
                               await settingsService.setDailyReminderTime(null);
@@ -1593,82 +1596,82 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                           }
                         },
                         trailingWidget:
-                        dailyReminderEnabled && selectedTime != null
-                            ? Text(
-                          selectedTime.format(context),
-                          style: AppTextStyles.body(appColors),
-                        )
-                            : null,
+                            dailyReminderEnabled && selectedTime != null
+                                ? Text(
+                                    selectedTime.format(context),
+                                    style: AppTextStyles.body(appColors),
+                                  )
+                                : null,
                       );
                     }),
                     Obx(() => _buildSwitchSetting(
-                      context: context,
-                      title: localizations.autoPlay,
-                      value: controller.settingsService.autoPlay.value,
-                      onChanged: (value) {
-                        controller.settingsService.setAutoPlay(value);
-                      },
-                    )),
+                          context: context,
+                          title: localizations.autoPlay,
+                          value: controller.settingsService.autoPlay.value,
+                          onChanged: (value) {
+                            controller.settingsService.setAutoPlay(value);
+                          },
+                        )),
                     Obx(() => _buildSwitchSetting(
-                      context: context,
-                      title: localizations.torchAlerts,
-                      value: controller.settingsService.torchAlerts.value,
-                      onChanged: (value) async {
-                        controller.settingsService.setTorchAlerts(value);
-                        if (value) {
-                          await Permission.camera.request();
-                        }
-                      },
-                    )),
+                          context: context,
+                          title: localizations.torchAlerts,
+                          value: controller.settingsService.torchAlerts.value,
+                          onChanged: (value) async {
+                            controller.settingsService.setTorchAlerts(value);
+                            if (value) {
+                              await Permission.camera.request();
+                            }
+                          },
+                        )),
                     Obx(() => _buildSwitchSetting(
-                      context: context,
-                      title: localizations.keepScreenOn,
-                      value: controller.settingsService.keepScreenOn.value,
-                      onChanged: (value) {
-                        controller.settingsService.setKeepScreenOn(value);
-                        if (value) {
-                          WakelockPlus.enable();
-                        } else {
-                          WakelockPlus.disable();
-                        }
-                      },
-                    )),
+                          context: context,
+                          title: localizations.keepScreenOn,
+                          value: controller.settingsService.keepScreenOn.value,
+                          onChanged: (value) {
+                            controller.settingsService.setKeepScreenOn(value);
+                            if (value) {
+                              WakelockPlus.enable();
+                            } else {
+                              WakelockPlus.disable();
+                            }
+                          },
+                        )),
                     Obx(() => _buildSwitchSetting(
-                      context: context,
-                      title: localizations.dndToggle,
-                      value: controller.settingsService.dndToggle.value,
-                      onChanged: (value) {
-                        controller.handleDndToggle(value);
-                      },
-                    )),
+                          context: context,
+                          title: localizations.dndToggle,
+                          value: controller.settingsService.dndToggle.value,
+                          onChanged: (value) {
+                            controller.handleDndToggle(value);
+                          },
+                        )),
                     Obx(() => controller.isNothingPhone.value
                         ? _buildSwitchSetting(
-                      context: context,
-                      title: localizations.glyphProgress,
-                      value: controller
-                          .settingsService.enableGlyphProgress.value,
-                      onChanged: (value) {
-                        controller.settingsService
-                            .setEnableGlyphProgress(value);
-                        if (!value) {
-                          controller.resetGlyphProgress();
-                        }
-                      },
-                    )
+                            context: context,
+                            title: localizations.glyphProgress,
+                            value: controller
+                                .settingsService.enableGlyphProgress.value,
+                            onChanged: (value) {
+                              controller.settingsService
+                                  .setEnableGlyphProgress(value);
+                              if (!value) {
+                                controller.resetGlyphProgress();
+                              }
+                            },
+                          )
                         : const SizedBox.shrink()),
                   ],
                 ),
               ),
             ),
 
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             // General Settings Section
             Text(
               localizations.general,
               style: AppTextStyles.sectionHeader(appColors),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
             Card(
               color: appColors.grey6,
               elevation: 0,
@@ -1680,29 +1683,29 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 child: Column(
                   children: [
                     Obx(() => _buildLanguageSettingTile(
-                      context: context,
-                      title: localizations.language,
-                      selectedLanguageCode:
-                      controller.settingsService.language.value,
-                      onChanged: (value) {
-                        controller.settingsService.setLanguage(value);
-                        Get.updateLocale(Locale(value));
-                      },
-                      localizations: localizations,
-                    )),
+                          context: context,
+                          title: localizations.language,
+                          selectedLanguageCode:
+                              controller.settingsService.language.value,
+                          onChanged: (value) {
+                            controller.settingsService.setLanguage(value);
+                            Get.updateLocale(Locale(value));
+                          },
+                          localizations: localizations,
+                        )),
                   ],
                 ),
               ),
             ),
 
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             // NEW: Wellness Settings Section
             Text(
               localizations.wellness ?? 'Wellness',
               style: AppTextStyles.sectionHeader(appColors),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
             Card(
               color: appColors.grey6,
               elevation: 0,
@@ -1714,39 +1717,39 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 child: Column(
                   children: [
                     Obx(() => _buildSwitchSetting(
-                      context: context,
-                      title:
-                      localizations.waterReminder ?? 'Water Reminder',
-                      value: controller
-                          .settingsService.waterReminderEnabled.value,
-                      onChanged: (value) async {
-                        controller.settingsService
-                            .setWaterReminderEnabled(value);
-                        if (value) {
-                          final bool granted = await controller
-                              .requestNotificationPermissions();
-                          if (!granted) {
-                            // If permission is not granted, revert the switch state in settings service
+                          context: context,
+                          title:
+                              localizations.waterReminder ?? 'Water Reminder',
+                          value: controller
+                              .settingsService.waterReminderEnabled.value,
+                          onChanged: (value) async {
                             controller.settingsService
-                                .setWaterReminderEnabled(false);
-                            Fluttertoast.showToast(
-                              msg: localizations
-                                  .notificationPermissionDenied,
-                            );
-                          } else {
-                            // Permission granted, reminder will be scheduled by listener in controller
-                            Fluttertoast.showToast(
-                                msg: localizations.waterReminderEnabled ??
-                                    'Water reminder enabled.');
-                          }
-                        } else {
-                          controller.cancelWaterReminder();
-                          Fluttertoast.showToast(
-                              msg: localizations.waterReminderCancelled ??
-                                  'Water reminder cancelled.');
-                        }
-                      },
-                    )),
+                                .setWaterReminderEnabled(value);
+                            if (value) {
+                              final bool granted = await controller
+                                  .requestNotificationPermissions();
+                              if (!granted) {
+                                // If permission is not granted, revert the switch state in settings service
+                                controller.settingsService
+                                    .setWaterReminderEnabled(false);
+                                Fluttertoast.showToast(
+                                  msg: localizations
+                                      .notificationPermissionDenied,
+                                );
+                              } else {
+                                // Permission granted, reminder will be scheduled by listener in controller
+                                Fluttertoast.showToast(
+                                    msg: localizations.waterReminderEnabled ??
+                                        'Water reminder enabled.');
+                              }
+                            } else {
+                              controller.cancelWaterReminder();
+                              Fluttertoast.showToast(
+                                  msg: localizations.waterReminderCancelled ??
+                                      'Water reminder cancelled.');
+                            }
+                          },
+                        )),
                     Obx(() {
                       final currentInterval = controller
                           .settingsService.waterReminderIntervalMinutes.value;
@@ -1765,91 +1768,91 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                       availableIntervals.sort();
 
                       return controller
-                          .settingsService.waterReminderEnabled.value
+                              .settingsService.waterReminderEnabled.value
                           ? Column(
-                        children: [
-                          Divider(color: appColors.grey5),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: AppSpacing.small),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    localizations.interval ?? 'Interval',
-                                    style: AppTextStyles.title(appColors),
-                                  ),
-                                  Expanded(
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      // Use the custom water reminder interval selector
-                                      child:
-                                      _buildWaterReminderIntervalSelector(
-                                        context,
-                                        appColors,
-                                        localizations,
-                                        currentInterval,
-                                        availableIntervals,
-                                      ),
+                              children: [
+                                Divider(color: appColors.grey5),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: AppSpacing.small),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          localizations.interval ?? 'Interval',
+                                          style: AppTextStyles.title(appColors),
+                                        ),
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            // Use the custom water reminder interval selector
+                                            child:
+                                                _buildWaterReminderIntervalSelector(
+                                              context,
+                                              appColors,
+                                              localizations,
+                                              currentInterval,
+                                              availableIntervals,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Divider(color: appColors.grey5),
-                          _buildRadioSetting<String>(
-                            context: context,
-                            title: localizations.notification,
-                            value: 'notification',
-                            groupValue: controller
-                                .settingsService.waterReminderType.value,
-                            onChanged: (value) {
-                              if (value != null) {
-                                controller.settingsService
-                                    .setWaterReminderType(value);
-                              }
-                            },
-                          ),
-                          _buildRadioSetting<String>(
-                            context: context,
-                            title: localizations.alarm,
-                            value: 'alarm',
-                            groupValue: controller
-                                .settingsService.waterReminderType.value,
-                            onChanged: (value) async {
-                              if (value != null) {
-                                controller.settingsService
-                                    .setWaterReminderType(value);
-                                final bool enabled = await controller
-                                    .areNotificationsEnabled();
-                                if (!enabled) {
-                                  await controller
-                                      .requestNotificationPermissions();
-                                }
-                              }
-                            },
-                          ),
-                        ],
-                      )
+                                ),
+                                Divider(color: appColors.grey5),
+                                _buildRadioSetting<String>(
+                                  context: context,
+                                  title: localizations.notification,
+                                  value: 'notification',
+                                  groupValue: controller
+                                      .settingsService.waterReminderType.value,
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      controller.settingsService
+                                          .setWaterReminderType(value);
+                                    }
+                                  },
+                                ),
+                                _buildRadioSetting<String>(
+                                  context: context,
+                                  title: localizations.alarm,
+                                  value: 'alarm',
+                                  groupValue: controller
+                                      .settingsService.waterReminderType.value,
+                                  onChanged: (value) async {
+                                    if (value != null) {
+                                      controller.settingsService
+                                          .setWaterReminderType(value);
+                                      final bool enabled = await controller
+                                          .areNotificationsEnabled();
+                                      if (!enabled) {
+                                        await controller
+                                            .requestNotificationPermissions();
+                                      }
+                                    }
+                                  },
+                                ),
+                              ],
+                            )
                           : const SizedBox.shrink();
                     }),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             // Appearance and App Colors Settings Section
             Text(
               localizations.appColors,
               style: AppTextStyles.sectionHeader(appColors),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
             Card(
               color: appColors.grey6,
               elevation: 0,
@@ -1861,20 +1864,20 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 child: Column(
                   children: [
                     Obx(() => _buildThemeSettingTile(
-                      context: context,
-                      title: localizations.theme,
-                      selectedThemeMode: settingsService.themeMode.value,
-                      onChanged: (value) {
-                        settingsService.setThemeMode(value);
-                      },
-                      localizations: localizations,
-                    )),
+                          context: context,
+                          title: localizations.theme,
+                          selectedThemeMode: settingsService.themeMode.value,
+                          onChanged: (value) {
+                            settingsService.setThemeMode(value);
+                          },
+                          localizations: localizations,
+                        )),
                     Divider(color: appColors.grey5),
                     _buildColorSettingTile(
                       context: context,
                       title: localizations.primaryColor,
                       selectedColorName:
-                      settingsService.selectedPrimaryColorName,
+                          settingsService.selectedPrimaryColorName,
                       onChanged: (colorName) => settingsService
                           .setSelectedPrimaryColorName(colorName),
                     ),
@@ -1882,7 +1885,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                       context: context,
                       title: localizations.secondaryColor,
                       selectedColorName:
-                      settingsService.selectedSecondaryColorName,
+                          settingsService.selectedSecondaryColorName,
                       onChanged: (colorName) => settingsService
                           .setSelectedSecondaryColorName(colorName),
                     ),
@@ -1890,7 +1893,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                       context: context,
                       title: localizations.tertiaryColor,
                       selectedColorName:
-                      settingsService.selectedTertiaryColorName,
+                          settingsService.selectedTertiaryColorName,
                       onChanged: (colorName) => settingsService
                           .setSelectedTertiaryColorName(colorName),
                     ),
@@ -1899,14 +1902,14 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
               ),
             ),
 
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             // Data Management Section
             Text(
               localizations.data,
               style: AppTextStyles.sectionHeader(appColors),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
             Card(
               color: appColors.grey6,
               elevation: 0,
@@ -1991,9 +1994,9 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                                           color: appColors.grey3,
                                           borderRadius: 8,
                                           textPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: AppSpacing.medium,
-                                              vertical: AppSpacing.small),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: AppSpacing.medium,
+                                                  vertical: AppSpacing.small),
                                           textColor: appColors.grey10,
                                         ),
                                       ),
@@ -2018,9 +2021,9 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                                           color: appColors.error,
                                           borderRadius: 8,
                                           textPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: AppSpacing.medium,
-                                              vertical: AppSpacing.small),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: AppSpacing.medium,
+                                                  vertical: AppSpacing.small),
                                           textColor: appColors.grey10,
                                         ),
                                       ),
@@ -2040,14 +2043,14 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
               ),
             ),
 
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             // About and T&C Tiles Section (Original)
             Text(
               localizations.aboutAndLegal ?? 'About & Legal',
               style: AppTextStyles.sectionHeader(appColors),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
             Card(
               color: appColors.grey6,
               elevation: 0,
@@ -2082,7 +2085,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
               ),
             ),
 
-            SizedBox(height: AppSpacing.extraLarge),
+            const SizedBox(height: AppSpacing.extraLarge),
 
             // New Links Section (Copied from about_screen.dart)
             Text(
@@ -2152,7 +2155,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 style: AppTextStyles.body(appColors),
               ),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
           ],
         ),
       ),
@@ -2344,7 +2347,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
           backgroundColor: appColors.grey6,
           insetPadding: EdgeInsets.zero,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: MediaQuery.of(dialogContext).size.width * 0.85,
             padding: const EdgeInsets.all(16),
@@ -2437,7 +2440,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
       File file = File(result.files.single.path!);
       String csvString = await file.readAsString();
       List<List<dynamic>> rowsAsListOfList =
-      const CsvToListConverter().convert(csvString);
+          const CsvToListConverter().convert(csvString);
 
       print('DEBUG: Raw CSV rows parsed:');
       for (var row in rowsAsListOfList) {
@@ -2531,9 +2534,9 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
             final dateString = row[1].toString();
             final focusMinutesString = row[2].toString();
             final String? labelName =
-            row[3].toString().isEmpty ? null : row[3].toString();
+                row[3].toString().isEmpty ? null : row[3].toString();
             final String? note =
-            row[4].toString().isEmpty ? null : row[4].toString();
+                row[4].toString().isEmpty ? null : row[4].toString();
             final String isCompletedString = row[5].toString().toLowerCase();
 
             final DateTime startTime = DateTime.parse(startTimeString);
@@ -2676,7 +2679,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 final int? minute = int.tryParse(valueString);
                 if (tempDailyReminderHour != null && minute != null) {
                   final TimeOfDay time =
-                  TimeOfDay(hour: tempDailyReminderHour!, minute: minute);
+                      TimeOfDay(hour: tempDailyReminderHour, minute: minute);
                   await controller.settingsService.setDailyReminderTime(time);
                   controller.scheduleDailyReminder();
                 } else if (valueString == 'null' &&
@@ -2730,7 +2733,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 } else {
                   try {
                     final Map<String, dynamic> labelMap =
-                    Map<String, dynamic>.from(jsonDecode(valueString));
+                        Map<String, dynamic>.from(jsonDecode(valueString));
                     await controller.settingsService
                         .setSelectedStatsLabel(labelMap);
                   } catch (e) {
@@ -2760,7 +2763,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                 await controller.settingsService
                     .setSelectedTertiaryColorName(valueString);
                 break;
-            // NEW: Water Reminder Settings Import
+              // NEW: Water Reminder Settings Import
               case 'waterReminderEnabled':
                 if (valueString == 'true' || valueString == 'false') {
                   await controller.settingsService
@@ -2844,7 +2847,7 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
             backgroundColor: appColors.grey6,
             insetPadding: EdgeInsets.zero,
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Container(
               width: MediaQuery.of(dialogContext).size.width * 0.85,
               padding: const EdgeInsets.all(16),
@@ -2866,11 +2869,11 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: errors
                             .map((e) => _buildSettingText(
-                          e,
-                          context: dialogContext,
-                          fontWeight: FontWeight.w500,
-                          color: appColors.error,
-                        ))
+                                  e,
+                                  context: dialogContext,
+                                  fontWeight: FontWeight.w500,
+                                  color: appColors.error,
+                                ))
                             .toList(),
                       ),
                     ),
@@ -3017,77 +3020,5 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
       if (a[i] != b[i]) return false;
     }
     return true;
-  }
-}
-
-/// Custom track shape for the slider to show a default value indicator.
-/// This class may not be strictly necessary if CustomSliderWithTooltip handles its own rendering.
-class _DefaultValueTrackShape extends RoundedRectSliderTrackShape {
-  final double defaultValue;
-  final double min;
-  final double max;
-  final AppThemeColors appColors;
-
-  const _DefaultValueTrackShape({
-    required this.defaultValue,
-    required this.min,
-    required this.max,
-    required this.appColors,
-  });
-
-  @override
-  void paint(
-      PaintingContext context,
-      Offset offset, {
-        double additionalActiveTrackHeight = 0,
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required Animation<double> enableAnimation,
-        required TextDirection textDirection,
-        required Offset thumbCenter,
-        Offset? secondaryOffset,
-        bool isEnabled = true,
-        bool isDiscrete = false,
-      }) {
-    super.paint(
-      context,
-      offset,
-      additionalActiveTrackHeight: additionalActiveTrackHeight,
-      parentBox: parentBox,
-      sliderTheme: sliderTheme,
-      enableAnimation: enableAnimation,
-      textDirection: textDirection,
-      thumbCenter: thumbCenter,
-      secondaryOffset: secondaryOffset,
-      isEnabled: isEnabled,
-      isDiscrete: isDiscrete,
-    );
-
-    final canvas = context.canvas;
-    final trackRect = getPreferredRect(
-      parentBox: parentBox,
-      offset: offset,
-      sliderTheme: sliderTheme,
-      isEnabled: isEnabled,
-      isDiscrete: isDiscrete,
-    );
-
-    final double trackWidth = trackRect.width;
-    final double defaultPosition =
-        ((defaultValue - min) / (max - min)) * trackWidth;
-
-    final Paint paint = Paint()
-      ..color = sliderTheme.activeTrackColor ?? appColors.grey5
-      ..style = PaintingStyle.fill;
-
-    canvas.drawRect(
-      Rect.fromLTWH(
-        trackRect.left + defaultPosition - 1,
-        trackRect.top - 2,
-        2,
-        8,
-      ),
-      paint,
-    );
   }
 }

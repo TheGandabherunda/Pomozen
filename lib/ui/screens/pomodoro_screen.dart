@@ -38,9 +38,7 @@ class _PomodoroScreenState extends State<PomodoroScreen>
   late AnimationController _screenShrinkAnimationController;
 
   // Animation Values
-  late Animation<double> _resetButtonScaleAnimation;
   late Animation<double> _playPauseButtonScaleAnimation;
-  late Animation<double> _skipButtonScaleAnimation;
   late Animation<double> _timerScaleAnimation;
   late Animation<double> _labelBoxScaleAnimation;
   late Animation<double> _screenShrinkScaleAnimation;
@@ -87,21 +85,9 @@ class _PomodoroScreenState extends State<PomodoroScreen>
       reverseDuration: const Duration(milliseconds: 200),
     );
 
-    _resetButtonScaleAnimation =
-        Tween<double>(begin: 1.0, end: 0.9).animate(CurvedAnimation(
-      parent: _resetButtonAnimationController,
-      curve: Curves.easeOutCirc,
-      reverseCurve: Curves.easeOutCirc,
-    ));
     _playPauseButtonScaleAnimation =
         Tween<double>(begin: 1.0, end: 0.9).animate(CurvedAnimation(
       parent: _playPauseButtonAnimationController,
-      curve: Curves.easeOutCirc,
-      reverseCurve: Curves.easeOutCirc,
-    ));
-    _skipButtonScaleAnimation =
-        Tween<double>(begin: 1.0, end: 0.9).animate(CurvedAnimation(
-      parent: _skipButtonAnimationController,
       curve: Curves.easeOutCirc,
       reverseCurve: Curves.easeOutCirc,
     ));
@@ -244,7 +230,7 @@ class _PomodoroScreenState extends State<PomodoroScreen>
   @override
   Widget build(BuildContext context) {
     final appColors = AppTheme.colorsOf(context);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -484,7 +470,7 @@ class _PomodoroScreenState extends State<PomodoroScreen>
   // Dialogs
   Future<void> _showAddLabelDialog(BuildContext context) async {
     final appColors = AppTheme.colorsOf(context);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final nameController = TextEditingController();
     final namedColors = AppTheme.getNamedColors(Theme.of(context).brightness);
     Color selectedColor = namedColors['Orange'] ?? Colors.blue;
@@ -689,7 +675,7 @@ class _PomodoroScreenState extends State<PomodoroScreen>
   Future<void> _showEditLabelDialog(
       BuildContext context, Map<String, dynamic> label) async {
     final appColors = AppTheme.colorsOf(context);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final nameController = TextEditingController(text: label['name']);
     final namedColors = AppTheme.getNamedColors(Theme.of(context).brightness);
     final availableColors = namedColors.values.toList();
@@ -1150,7 +1136,7 @@ class _PomodoroScreenState extends State<PomodoroScreen>
                       ),
                       PopupMenuItem<void>(
                         enabled: false,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Row(
                           children: [
                             Expanded(

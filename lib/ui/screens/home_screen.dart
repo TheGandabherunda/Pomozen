@@ -44,8 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final settingsService = Get.find<SettingsService>();
 
       if (!settingsService.notificationPermissionAsked.value) {
-        final bool granted =
-        await _pomodoroController.requestNotificationPermissions();
         await settingsService.setNotificationPermissionAsked(true);
       }
     });

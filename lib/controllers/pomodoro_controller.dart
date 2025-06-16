@@ -27,7 +27,6 @@ enum PomodoroMode { focus, shortBreak, longBreak }
 class PomodoroController extends GetxController with WidgetsBindingObserver {
   // Service and Plugin Instances
   final SettingsService settingsService;
-  late AwesomeNotifications _notifications;
   final DoNotDisturbPlugin _dndPlugin = DoNotDisturbPlugin();
   late NothingGlyphInterface _glyphInterfacePlugin;
 
@@ -487,12 +486,10 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
         tz.setLocalLocation(location);
       } catch (e) {
         final fallbacks = _getTimezoneFallbacks(currentTimeZone);
-        bool timezoneSet = false;
         for (final fallback in fallbacks) {
           try {
             final location = tz.getLocation(fallback);
             tz.setLocalLocation(location);
-            timezoneSet = true;
             break;
           } catch (e) {}
         }
@@ -524,7 +521,6 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
 
   /// Initializes Awesome Notifications with channels and groups.
   Future<void> _initializeNotifications() async {
-    _notifications = AwesomeNotifications();
 
     await AwesomeNotifications().setListeners(
       onActionReceivedMethod: NotificationController.onActionReceivedMethod,
@@ -1205,7 +1201,7 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
       final String? labelName = state['currentLabelName'];
       final dynamic storedColor = state['currentLabelColor'];
       final int? labelColor = storedColor is double?
-          ? (storedColor as double?)?.toInt()
+          ? (storedColor)?.toInt()
           : storedColor as int?;
 
       if (labelName != null && labelColor != null) {
