@@ -3,7 +3,7 @@ name: Flutter F-Droid-like ARM64 Build Verification
 on:
   pull_request:
     branches:
-      - main # Or your development branch
+      - main
 
 jobs:
   build_arm64_apk:
