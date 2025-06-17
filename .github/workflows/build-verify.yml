@@ -22,9 +22,11 @@ jobs:
       - name: Modify build.gradle.kts for F-Droid compatibility
         run: |
           echo "Applying sed commands to android/app/build.gradle.kts for Kotlin DSL"
+          # Set isUniversalApk to false for single ABI APK
           sed -i 's/isUniversalApk = true/isUniversalApk = false/' android/app/build.gradle.kts
           sed -i '/abiFilters/c\            abiFilters("arm64-v8a")' android/app/build.gradle.kts
-          sed -i '/signingConfig = signingConfigs.release/d' android/app/build.gradle.kts
+          sed -i '/signingConfigs {/,/^ *}/d' android/app/build.gradle.kts
+          sed -i '/signingConfig = signingConfigs.getByName("release")/d' android/app/build.gradle.kts
           echo "Modified build.gradle.kts content (after sed):"
           cat android/app/build.gradle.kts # Print for verification in logs
 
