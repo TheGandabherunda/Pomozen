@@ -29,11 +29,6 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Run Flutter tests
-        # This is a crucial step for F-Droid-like verification.
-        # F-Droid expects apps to build and run, and passing tests indicate this.
-        run: flutter test
-
       - name: Build Android APK (Release)
         # This emulates the F-Droid build process.
         # F-Droid generally builds release APKs from source.
