@@ -21,22 +21,11 @@ jobs:
 
       - name: Apply F-Droid compatibility modifications
         run: |
-          # Fix the syntax errors (dangling braces) introduced by previous sed operations.
-          # These commands target and remove specific lines containing only '}' with certain indentations.
           sed -i '/^        }$/d' android/app/build.gradle.kts
           sed -i '/^    }$/d' android/app/build.gradle.kts
-
-          # Ensure the signingConfig assignment for the release build type is removed.
-          # This prevents Gradle from attempting to use a local signing configuration, as F-Droid handles signing.
           sed -i '/signingConfig = signingConfigs.getByName("release")/d' android/app/build.gradle.kts
-
-          # Apply ABI and Universal APK settings for F-Droid compatibility.
-          # IMPORTANT: These sed commands will only modify lines if they already exist in build.gradle.kts.
-          # If the 'packagingOptions' block or specific 'isUniversalApk'/'include' lines are entirely missing,
-          # these commands will not add them. In such cases, you might need to manually add these sections
-          # to your `android { ... }` block in `android/app/build.gradle.kts` for full F-Droid compatibility.
           sed -i 's/isUniversalApk = true/isUniversalApk = false/' android/app/build.gradle.kts
-          sed -i 's/include\(".*/include\("arm64-v8a"\)/' android/app/build.gradle.kts
+          sed -i 's/include(".*")/include("arm64-v8a")/' android/app/build.gradle.kts
 
 
       - name: Clone Flutter SDK (specific version)
