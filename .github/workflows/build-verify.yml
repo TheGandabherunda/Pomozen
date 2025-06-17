@@ -20,13 +20,12 @@ jobs:
           java-version: '17' # Common for Android builds
 
       - name: Modify build.gradle.kts for F-Droid compatibility
-        # This step uses sed to modify build.gradle.kts as per the F-Droid recipe.
-        # It removes signing configs, explicitly sets target ABI to arm64-v8a,
-        # and disables universal APK generation.
         run: |
-          echo "Applying sed commands to android/app/build.gradle.kts"
-          sed -r '/signingConfigs.getByName/d ; /create\("release"\) \{/,/        \}/d ; s/include\(".*/include\("arm64-v8a"\)/ ; s/isUniversalApk = true/isUniversalApk = false/' -i android/app/build.gradle.kts
-          echo "Modified build.gradle.kts content:"
+          echo "Applying sed commands to android/app/build.gradle.kts for Kotlin DSL"
+          sed -i 's/isUniversalApk = true/isUniversalApk = false/' android/app/build.gradle.kts
+          sed -i '/abiFilters/c\            abiFilters("arm64-v8a")' android/app/build.gradle.kts
+          sed -i '/signingConfig = signingConfigs.release/d' android/app/build.gradle.kts
+          echo "Modified build.gradle.kts content (after sed):"
           cat android/app/build.gradle.kts # Print for verification in logs
 
       - name: Clone Flutter SDK (specific version)
