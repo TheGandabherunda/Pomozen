@@ -51,13 +51,17 @@ jobs:
         # Fetching Dart/Flutter package dependencies.
         run: flutter pub get
 
+      - name: Accept Android SDK licenses
+        # This step is crucial for resolving the "Some Android licenses not accepted" error.
+        run: yes | flutter doctor --android-licenses
+
       - name: Flutter Doctor (verbose)
-        # Added to check Flutter environment setup before building
+        # Added to check Flutter environment setup after accepting licenses
         run: flutter doctor -v
 
       - name: Build Android APK (Release - arm64-v8a) with verbose logging
-        # Building the APK with verbose debugging flags.
-        run: flutter build apk --release --verbose --debug --stacktrace
+        # Building the APK with verbose debugging flags (removed --stacktrace as it's a Gradle flag).
+        run: flutter build apk --release --verbose --debug
 
       - name: Locate generated APK
         # This step helps verify the exact path of the generated APK.
