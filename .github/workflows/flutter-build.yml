@@ -1,4 +1,4 @@
-name: Build Flutter APK
+name: Build APK
 
 on:
   push:
@@ -9,11 +9,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build APK
+    name: Gradle APK Build
 
     steps:
       - name: 🧾 Checkout code
         uses: actions/checkout@v4
+
+      - name: 🛠️ Patch Gradle for FDroid
+        run: |
+          sed -r '/signingConfigs.getByName/d ; /create\("release"\) \{/,/        \}/d ; s/include\(".*/include\("arm64-v8a"\)/ ; s/isUniversalApk = true/isUniversalApk = false/' -i android/app/build.gradle.kts
 
       - name: 🔧 Set up Flutter
         uses: subosito/flutter-action@v2
@@ -38,34 +42,25 @@ jobs:
           restore-keys: |
             gradle-cache-${{ runner.os }}-
 
-      - name: 🧹 Patch Gradle (can be disabled for testing)
-        run: |
-          sed -r '/signingConfigs.getByName/d ; /create\("release"\) \{/,/        \}/d ; s/include\(".*/include\("arm64-v8a"\)/ ; s/isUniversalApk = true/isUniversalApk = false/' -i android/app/build.gradle.kts
-
-      - name: 📦 Install dependencies
+      - name: 📦 Install Flutter deps
         run: flutter pub get
 
-      - name: 🛠️ Build release APK (verbose)
-        run: flutter build apk --release --verbose
-
-      - name: 🔍 Find APK files (debug)
-        run: |
-          echo "APK files:"
-          find build -type f -name "*.apk" || echo "No APK found."
+      - name: 🧱 Build release APK with Gradle
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
 
       - name: 📥 Clone reproducible-apk-tools
         run: git clone -b v0.3.0 https://github.com/obfusk/reproducible-apk-tools.git
 
-      - name: 🧪 Fix APK metadata
+      - name: 🔍 Find APK and fix metadata
         run: |
-          OUT=$(find build -name "app-*-release.apk" | grep arm64 || find build -name "*.apk" | head -n 1)
-          echo "Using APK at: $OUT"
-          test -f "$OUT" || (echo "❌ No APK found" && exit 1)
+          OUT=$(find android/app/build -name '*arm64*-release.apk' | head -n 1)
+          echo "Found APK: $OUT"
+          test -f "$OUT" || (echo "❌ APK not found" && exit 1)
           python3 reproducible-apk-tools/inplace-fix.py --internal --page-size 16 fix-newlines "$OUT" 'META-INF/services/*'
           mkdir -p outputs
           mv "$OUT" outputs/unsigned.apk
 
-      - name: 📤 Upload APK Artifact
+      - name: 📤 Upload unsigned APK
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-apk
