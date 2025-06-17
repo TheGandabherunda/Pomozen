@@ -61,7 +61,7 @@ jobs:
 
       - name: Build Android APK (Release - arm64-v8a) with verbose logging
         # Building the APK with verbose debugging flags (removed --stacktrace as it's a Gradle flag).
-        run: flutter build apk --release --verbose
+        run: flutter build apk --release
 
       - name: Locate generated APK
         # This step helps verify the exact path of the generated APK.
