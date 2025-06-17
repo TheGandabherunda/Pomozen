@@ -36,18 +36,24 @@ android {
         versionName = flutter.versionName
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file(keystoreProperties.get("storeFile").toString())
-            storePassword = keystoreProperties.get("storePassword").toString()
-            keyAlias = keystoreProperties.get("keyAlias").toString()
-            keyPassword = keystoreProperties.get("keyPassword").toString()
+    // Only create signing config if key.properties exists
+    if (keystorePropertiesFile.exists()) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            // Only apply signing config if it exists
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
 
             //optimized settings
             isMinifyEnabled = true          // Enable code obfuscation
