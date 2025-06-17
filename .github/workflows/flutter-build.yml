@@ -1,0 +1,51 @@
+name: Build Flutter APK (FDroid Style)
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.4'
+
+      - name: 🧹 Modify Gradle for reproducible build
+        run: |
+          sed -r '/signingConfigs.getByName/d ; /create\("release"\) \{/,/        \}/d ; s/include\(".*/include\("arm64-v8a"\)/ ; s/isUniversalApk = true/isUniversalApk = false/' -i android/app/build.gradle.kts
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: 🛠️ Build release APK
+        run: flutter build apk --release
+
+      - name: 📥 Clone reproducible-apk-tools
+        run: git clone -b v0.3.0 https://github.com/obfusk/reproducible-apk-tools.git
+
+      - name: 🧪 Fix APK metadata for reproducibility
+        run: |
+          OUT=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          python3 reproducible-apk-tools/inplace-fix.py --internal --page-size 16 fix-newlines "$OUT" 'META-INF/services/*'
+          mkdir -p outputs
+          mv "$OUT" outputs/unsigned.apk
+
+      - name: 📤 Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-apk
+          path: outputs/unsigned.apk
+
+      - name: 🧼 Clean up
+        run: |
+          rm -rf build .dart_tool .pub-cache reproducible-apk-tools
