@@ -1,4 +1,4 @@
-name: Build Flutter APK (FDroid Style)
+name: Build Flutter APK
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
 
 jobs:
   build:
-    name: Build APK (no tests)
     runs-on: ubuntu-latest
+    name: Build APK
 
     steps:
-      - name: 🧾 Checkout repo
+      - name: 🧾 Checkout code
         uses: actions/checkout@v4
 
       - name: 🔧 Set up Flutter
@@ -20,43 +20,54 @@ jobs:
         with:
           flutter-version: '3.32.4'
 
-      - name: 🧹 Patch Gradle for reproducible build
+      - name: 🗃️ Restore Dart pub cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-cache-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            pub-cache-${{ runner.os }}-
+
+      - name: 🗃️ Restore Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle
+            .gradle
+          key: gradle-cache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-cache-${{ runner.os }}-
+
+      - name: 🧹 Patch Gradle (can be disabled for testing)
         run: |
           sed -r '/signingConfigs.getByName/d ; /create\("release"\) \{/,/        \}/d ; s/include\(".*/include\("arm64-v8a"\)/ ; s/isUniversalApk = true/isUniversalApk = false/' -i android/app/build.gradle.kts
 
       - name: 📦 Install dependencies
         run: flutter pub get
 
-      - name: 🛠️ Build release APK
-        run: flutter build apk --release
+      - name: 🛠️ Build release APK (verbose)
+        run: flutter build apk --release --verbose
 
-      - name: 🔍 Find APK path
-        id: find_apk
+      - name: 🔍 Find APK files (debug)
         run: |
-          OUT=$(find build -name "app-*-release.apk" | grep "arm64" || true)
-          if [ -z "$OUT" ]; then
-            echo "❌ APK not found after build"
-            exit 1
-          fi
-          echo "Found APK: $OUT"
-          echo "apk_path=$OUT" >> $GITHUB_OUTPUT
+          echo "APK files:"
+          find build -type f -name "*.apk" || echo "No APK found."
 
       - name: 📥 Clone reproducible-apk-tools
         run: git clone -b v0.3.0 https://github.com/obfusk/reproducible-apk-tools.git
 
       - name: 🧪 Fix APK metadata
         run: |
-          python3 reproducible-apk-tools/inplace-fix.py --internal --page-size 16 fix-newlines "${{ steps.find_apk.outputs.apk_path }}" 'META-INF/services/*'
+          OUT=$(find build -name "app-*-release.apk" | grep arm64 || find build -name "*.apk" | head -n 1)
+          echo "Using APK at: $OUT"
+          test -f "$OUT" || (echo "❌ No APK found" && exit 1)
+          python3 reproducible-apk-tools/inplace-fix.py --internal --page-size 16 fix-newlines "$OUT" 'META-INF/services/*'
           mkdir -p outputs
-          mv "${{ steps.find_apk.outputs.apk_path }}" outputs/unsigned.apk
+          mv "$OUT" outputs/unsigned.apk
 
-      - name: 📤 Upload APK Artifact (5-day retention)
+      - name: 📤 Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-apk
           path: outputs/unsigned.apk
           retention-days: 5
-
-      - name: 🧼 Clean up
-        run: |
-          rm -rf build .dart_tool .pub-cache reproducible-apk-tools outputs
