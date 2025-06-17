@@ -2,10 +2,12 @@ import java.io.FileInputStream
 import java.util.Properties
 
 val keystoreProperties = Properties()
-val keystorePropertiesFile = rootProject.file("key.properties")
+val keystorePropertiesFile = project.rootProject.file("key.properties")
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
+
 
 plugins {
     id("com.android.application")
@@ -30,61 +32,61 @@ android {
 
     defaultConfig {
         applicationId = "org.projectsolutus.pomozen"
-        minSdkVersion(23)
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    // Only create signing config if key.properties exists
-    if (keystorePropertiesFile.exists()) {
-        signingConfigs {
-            create("release") {
-                storeFile = file(keystoreProperties.getProperty("storeFile"))
-                storePassword = keystoreProperties.getProperty("storePassword")
-                keyAlias = keystoreProperties.getProperty("keyAlias")
-                keyPassword = keystoreProperties.getProperty("keyPassword")
+    signingConfigs {
+        create("release") {
+            if (keystoreProperties.isNotEmpty()) {
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
             }
         }
     }
 
     buildTypes {
-        release {
-            // Only apply signing config if it exists
-            if (keystorePropertiesFile.exists()) {
-                signingConfig = signingConfigs.getByName("release")
-            }
-
-            //optimized settings
-            isMinifyEnabled = true          // Enable code obfuscation
-            isShrinkResources = false       // Disable resource shrinking (fixes notifications)
-
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            dependenciesInfo {
+                includeInApk = false
+                includeInBundle = false
+            }
         }
-    }
-
-    // ABI Splits for smaller APK sizes
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86_64")
-            isUniversalApk = true
-        }
-    }
-
-    //requirement: Disable dependency metadata
-    dependenciesInfo {
-        includeInApk = false
-        includeInBundle = false
     }
 }
 
 flutter {
     source = "../.."
+}
+
+val abiCodes = mapOf(
+    "x86_64" to 1,
+    "armeabi-v7a" to 2,
+    "arm64-v8a" to 3
+)
+
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            val abi = output.filters.find { it.filterType.name == "ABI" }?.identifier
+            val baseVersionCode = flutter.versionCode
+            val abiCode = abiCodes[abi]
+            if (abiCode != null) {
+                output.versionCode.set(baseVersionCode * 10 + abiCode)
+            }
+        }
+    }
 }
 
 dependencies {
