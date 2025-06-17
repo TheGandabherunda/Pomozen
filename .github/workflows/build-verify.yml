@@ -21,12 +21,14 @@ jobs:
 
       - name: Apply F-Droid compatibility modifications
         run: |
-          sed -i '/^        }$/d' android/app/build.gradle.kts
-          sed -i '/^    }$/d' android/app/build.gradle.kts
-          sed -i '/signingConfig = signingConfigs.getByName("release")/d' android/app/build.gradle.kts
+          sed -i '70s/^\/\/ }$/}/' android/app/build.gradle.kts
+          sed -i '/signingConfigs {/,/^\s*}/ s/^\(.*\)/\/\/ \1/' android/app/build.gradle.kts
+          sed -i 's/\(.*signingConfig = signingConfigs.getByName("release").*\)/\/\/ \1/' android/app/build.gradle.kts
           sed -i 's/isUniversalApk = true/isUniversalApk = false/' android/app/build.gradle.kts
           sed -i 's/include(".*")/include("arm64-v8a")/' android/app/build.gradle.kts
-
+          echo "--- Modified build.gradle.kts content after sed commands ---"
+          cat android/app/build.gradle.kts
+          echo "----------------------------------------------------------"
 
       - name: Clone Flutter SDK (specific version)
         # As per the F-Droid recipe, cloning a specific Flutter version.
