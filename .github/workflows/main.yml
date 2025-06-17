@@ -51,10 +51,13 @@ jobs:
         # Fetching Dart/Flutter package dependencies.
         run: flutter pub get
 
-      - name: Build Android APK (Release - arm64-v8a)
-        # Building the APK. Since build.gradle.kts was modified by sed,
-        # this will now produce an arm64-v8a specific APK.
-        run: flutter build apk --release
+      - name: Flutter Doctor (verbose)
+        # Added to check Flutter environment setup before building
+        run: flutter doctor -v
+
+      - name: Build Android APK (Release - arm64-v8a) with verbose logging
+        # Building the APK with verbose debugging flags.
+        run: flutter build apk --release --verbose --debug --stacktrace
 
       - name: Locate generated APK
         # This step helps verify the exact path of the generated APK.
