@@ -1,0 +1,49 @@
+name: Build Verification
+
+on:
+  pull_request:
+    branches:
+      - main # Or your development branch
+
+jobs:
+  build_and_verify:
+    runs-on: ubuntu-latest # Or macos-latest for iOS builds
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17' # F-Droid often uses specific Java versions. Check their docs if needed.
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable' # Or 'beta', 'dev' if your app requires it. F-Droid often sticks to stable.
+          # You can pin a specific Flutter version if F-Droid requires it for your app, e.g.:
+          # flutter-version: '3.19.0' 
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Run Flutter tests
+        # This is a crucial step for F-Droid-like verification.
+        # F-Droid expects apps to build and run, and passing tests indicate this.
+        run: flutter test
+
+      - name: Build Android APK (Release)
+        # This emulates the F-Droid build process.
+        # F-Droid generally builds release APKs from source.
+        run: flutter build apk --release
+
+      - name: Verify Android APK existence (optional, but good)
+        run: |
+          if [ -f build/app/outputs/flutter-apk/app-release.apk ]; then
+            echo "Android release APK built successfully."
+          else
+            echo "Error: Android release APK not found!"
+            exit 1
+          fi
