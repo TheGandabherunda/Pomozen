@@ -45,5 +45,6 @@ app.*.map.json
 /android/app/release
 
 # Android Signing Keys
-/android/key.properties
-/android/app/my_flutter_release.jks
+android/key.properties
+**/*.keystore
+**/*.jks
