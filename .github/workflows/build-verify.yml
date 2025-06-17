@@ -1,0 +1,86 @@
+name: Build Verification
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_arm64_apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17' # Common for Android builds
+
+      - name: Modify build.gradle.kts for F-Droid compatibility
+        # This step uses sed to modify build.gradle.kts as per the F-Droid recipe.
+        # It removes signing configs, explicitly sets target ABI to arm64-v8a,
+        # and disables universal APK generation.
+        run: |
+          echo "Applying sed commands to android/app/build.gradle.kts"
+          sed -r '/signingConfigs.getByName/d ; /create\("release"\) \{/,/        \}/d ; s/include\(".*/include\("arm64-v8a"\)/ ; s/isUniversalApk = true/isUniversalApk = false/' -i android/app/build.gradle.kts
+          echo "Modified build.gradle.kts content:"
+          cat android/app/build.gradle.kts # Print for verification in logs
+
+      - name: Clone Flutter SDK (specific version)
+        # As per the F-Droid recipe, cloning a specific Flutter version.
+        # This bypasses the subosito/flutter-action for direct control.
+        env:
+          FLUTTER_VERSION: "3.32.4" # Match the F-Droid recipe's pinned version
+        run: |
+          echo "Cloning Flutter SDK version $FLUTTER_VERSION"
+          git clone -b $FLUTTER_VERSION https://github.com/flutter/flutter
+          # Add flutter to PATH for subsequent commands
+          echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
+
+      - name: Set PUB_CACHE and configure Flutter
+        # Setting PUB_CACHE for reproducible caching and disabling analytics.
+        run: |
+          export PUB_CACHE=$(pwd)/.pub-cache
+          flutter config --no-analytics
+          echo "PUB_CACHE set to: $PUB_CACHE"
+
+      - name: Get Flutter dependencies
+        # Fetching Dart/Flutter package dependencies.
+        run: flutter pub get
+
+      - name: Accept Android SDK licenses
+        # This step is crucial for resolving the "Some Android licenses not accepted" error.
+        run: yes | flutter doctor --android-licenses
+
+      - name: Build Android APK (Release - arm64-v8a) with verbose logging
+        # Building the APK with verbose debugging flags (removed --stacktrace as it's a Gradle flag).
+        run: flutter build apk --release
+
+      - name: Locate generated APK
+        # This step helps verify the exact path of the generated APK.
+        # The output of this command will be useful for debugging if the artifact is not found.
+        run: find build/app/outputs/flutter-apk/ -name '*.apk'
+
+      - name: Clone reproducible-apk-tools
+        # Cloning the specific tools used by the F-Droid recipe for reproducibility.
+        run: git clone -b v0.3.0 https://github.com/obfusk/reproducible-apk-tools.git
+
+      - name: Fix APK for reproducibility
+        # Applying the inplace-fix.py script as specified in the F-Droid recipe.
+        # This is important for achieving F-Droid's reproducibility goals.
+        env:
+          APK_OUTPUT_PATH: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+        run: |
+          echo "Applying reproducible-apk-tools fixes to $APK_OUTPUT_PATH"
+          python3 reproducible-apk-tools/inplace-fix.py --internal --page-size 16 fix-newlines "$APK_OUTPUT_PATH" 'META-INF/services/*'
+
+      - name: Upload built Android APK (arm64-v8a, unsigned) as artifact
+        # Uploading the processed APK. Note that this APK is unsigned,
+        # as F-Droid typically handles the final signing itself.
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-android-arm64-unsigned-apk
+          path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
