@@ -1,22 +1,22 @@
-name: Android Release Workflow
+name: Android Release Build
 
 on:
-  push:
-    tags:
-      - 'v*.*.*' # Matches tags like v1.0.0, v2.1.5-beta, etc.
-  workflow_dispatch: # Keep this for manual testing if needed
+  workflow_dispatch: # This makes the workflow runnable manually from the GitHub Actions UI
+    inputs:
+      branch:
+        description: 'Branch to build from' # This is the label the user sees
+        required: true                   # User must provide a value
+        default: 'main'                  # Pre-fills the input field with 'main'
 
 jobs:
-  build_and_release_android:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # This permission is necessary for softprops/action-gh-release to create releases
+  build_android_apk:
+    runs-on: ubuntu-latest # Using Ubuntu for Android builds
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }} # Ensure we checkout the exact tag that triggered this workflow
+          ref: ${{ github.event.inputs.branch }} # <<< IMPORTANT CHANGE: Use the input branch here
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -35,9 +35,10 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      # --- Steps to handle Android Signing Credentials ---
+      # --- ADD THESE STEPS FOR SIGNING ---
       - name: Decode Keystore File
         run: echo "${{ secrets.ANDROID_UPLOAD_KEYSTORE }}" | base64 --decode > android/app/release-key.jks
+        # Ensure 'android/app/' is the correct path for your keystore
 
       - name: Create Keystore Properties File
         run: |
@@ -45,49 +46,13 @@ jobs:
           echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+        # Ensure 'android/' is the correct path for your key.properties
 
-      - name: Build Android APK (Release - Signed)
+      - name: Build Android APK (Release)
         run: flutter build apk --release --split-per-abi
 
-      # --- GitHub Release Section (Updated for generic body with comparison link) ---
-
-      - name: Get App Version and Previous Tag
-        id: get_versions
-        run: |
-          # Extract current version from pubspec.yaml
-          CURRENT_APP_VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
-          echo "APP_VERSION=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
-
-          # Get the current tag name (e.g., v1.0.1)
-          CURRENT_TAG=${{ github.ref_name }}
-
-          # Get the previous tag. This command finds the tag before the current one, ordered by version.
-          # We need to ensure we only compare 'v' tags
-          PREVIOUS_TAG=$(git tag --sort=-v:refname | grep '^v[0-9]\+\.[0-9]\+\.[0-9]\+$' | head -n 2 | tail -n 1)
-
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "No previous tag found. Assuming first release."
-            PREVIOUS_TAG=$CURRENT_TAG # Or you could use the very first commit hash or a placeholder
-          fi
-          echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
-        shell: bash
-
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload Android APK Artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          # Construct the body with the generic link
-          body: |
-            Automated Android APK Release.
-            Version: ${{ steps.get_versions.outputs.APP_VERSION }}
-
-            For detailed changes, please refer to the Git comparison between
-            `${{ steps.get_versions.outputs.PREVIOUS_TAG }}` and `${{ github.ref_name }}`:
-            https://github.com/${{ github.repository }}/compare/${{ steps.get_versions.outputs.PREVIOUS_TAG }}...${{ github.ref_name }}
-          files: build/app/outputs/apk/release/*.apk
-          prerelease: false
-          draft: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: app-release-apk # Name of the artifact
+          path: build/app/outputs/apk/release/
