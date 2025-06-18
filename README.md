@@ -1,9 +1,20 @@
 # ⏳ Pomozen
 
-![Flutter](https://img.shields.io/badge/Built%20with-Flutter-02569B?style=flat&logo=flutter&logoColor=white)
-![License](https://img.shields.io/github/license/ProjectSolutus/Pomozen?style=flat-square)
-![Issues](https://img.shields.io/github/issues/ProjectSolutus/Pomozen?style=flat-square)
-![Stars](https://img.shields.io/github/stars/ProjectSolutus/Pomozen?style=flat-square)
+<p>
+  <img src="https://img.shields.io/badge/Built%20with-Flutter-02569B?style=flat&logo=flutter&logoColor=white">&nbsp;&nbsp;&nbsp;
+  <img src="https://img.shields.io/github/license/ProjectSolutus/Pomozen?style=flat-square">&nbsp;&nbsp;&nbsp;
+  <img src="https://img.shields.io/github/issues/ProjectSolutus/Pomozen?style=flat-square">&nbsp;&nbsp;&nbsp;
+  <img src="https://img.shields.io/github/stars/ProjectSolutus/Pomozen?style=flat-square">&nbsp;&nbsp;&nbsp;
+  <a href="https://shields.rbtlog.dev/org.projectsolutus.pomozen">
+    <img src="https://shields.rbtlog.dev/simple/org.projectsolutus.pomozen" alt="RB shield">
+  </a>
+</p>
+
+<p>
+  <a href="https://apt.izzysoft.de/packages/org.projectsolutus.pomozen">
+    <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid F-Droid" width="200">
+  </a>
+</p>
 
 **Pomozen** is a modern, open-source Pomodoro timer app designed to boost productivity and focus.  
 It applies the Pomodoro Technique—structuring work into focused intervals (typically 25 minutes)  
