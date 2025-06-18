@@ -3,20 +3,31 @@ name: Android Release Workflow
 on:
   push:
     tags:
-      - 'v*.*.*' # Matches tags like v1.0.0, v2.1.5-beta, etc.
-  workflow_dispatch: # Keep this for manual testing if needed
+      - 'v*.*.*' # This workflow will trigger when a Git tag is pushed (e.g., v1.0.0)
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to create the release from (e.g., v1.2.3)'
+        required: true
+        type: string
+        default: 'main' # A default, but the user must change for a tag release
+      base_tag: # Optional: For comparison if you don't want automatic previous tag
+        description: 'Optional: Base tag for comparison in release notes (e.g., v1.2.2)'
+        required: false
+        type: string
 
 jobs:
   build_and_release_android:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # This permission is necessary for softprops/action-gh-release to create releases
+      contents: write # Necessary for softprops/action-gh-release to create releases
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }} # Ensure we checkout the exact tag that triggered this workflow
+          # Checkout the specified tag if input is provided, otherwise checkout the tag that triggered the push
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -45,47 +56,77 @@ jobs:
           echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+        # Double-check: Make sure ANDROID_KEY_PASSWORD is the correct secret name you used.
 
       - name: Build Android APK (Release - Signed)
         run: flutter build apk --release --split-per-abi
 
       # --- GitHub Release Section (Updated for generic body with comparison link) ---
 
-      - name: Get App Version and Previous Tag
+      - name: Get App Version and Tags for Release
         id: get_versions
         run: |
-          # Extract current version from pubspec.yaml
+          # The current tag will either come from the push event or the manual input
+          CURRENT_RELEASE_TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "CURRENT_RELEASE_TAG=$CURRENT_RELEASE_TAG" >> $GITHUB_OUTPUT
+
+          # Extract current version from pubspec.yaml (at the checked out ref)
           CURRENT_APP_VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
           echo "APP_VERSION=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
 
-          # Get the current tag name (e.g., v1.0.1)
-          CURRENT_TAG=${{ github.ref_name }}
+          # Determine the previous tag for comparison
+          # This assumes that the 'tag' input is a valid git tag that exists
+          # and we can find a previous tag relative to it.
+          # If 'base_tag' input is provided, use that for comparison.
+          # Otherwise, try to find the immediate previous tag.
 
-          # Get the previous tag. This command finds the tag before the current one, ordered by version.
-          # We need to ensure we only compare 'v' tags
-          PREVIOUS_TAG=$(git tag --sort=-v:refname | grep '^v[0-9]\+\.[0-9]\+\.[0-9]\+$' | head -n 2 | tail -n 1)
+          PREVIOUS_TAG_FOR_COMPARE=""
+          if [[ -n "${{ github.event.inputs.base_tag }}" ]]; then
+            PREVIOUS_TAG_FOR_COMPARE="${{ github.event.inputs.base_tag }}"
+            echo "Using base_tag input: $PREVIOUS_TAG_FOR_COMPARE"
+          else
+            # Get the previous tag using git commands relative to the CURRENT_RELEASE_TAG
+            # First, make sure the tag itself is fetched so `git describe` can work
+            git fetch origin --tags
 
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "No previous tag found. Assuming first release."
-            PREVIOUS_TAG=$CURRENT_TAG # Or you could use the very first commit hash or a placeholder
+            # Try to find the immediate previous tag.
+            # `git describe --tags --abbrev=0 <current_tag>^` is usually good
+            # or `git tag --sort=-v:refname | grep -A 1 "$CURRENT_RELEASE_TAG" | tail -n 1` for simpler regex
+            # Let's stick to the previous robust `git tag` command, but now applied relative to the specified tag if needed.
+            # This is simpler and less error-prone than `git describe` for sequential version tags.
+
+            # Get all v-tags, sorted descending.
+            ALL_V_TAGS=$(git tag --sort=-v:refname | grep '^v[0-9]\+\.[0-9]\+\.[0-9]\+\(\-alpha\.\d\+\|\-beta\.\d\+\|\-rc\.\d\+\)*$')
+
+            # Find the line number of the current tag in that sorted list
+            CURRENT_TAG_LINE=$(echo "$ALL_V_TAGS" | grep -n "^$CURRENT_RELEASE_TAG$" | cut -d: -f1)
+
+            if [[ -n "$CURRENT_TAG_LINE" && "$CURRENT_TAG_LINE" -gt 1 ]]; then
+              # Get the tag from the line after the current tag in the sorted list
+              PREVIOUS_TAG_FOR_COMPARE=$(echo "$ALL_V_TAGS" | sed -n "$((CURRENT_TAG_LINE + 1))p")
+              echo "Found previous tag: $PREVIOUS_TAG_FOR_COMPARE"
+            else
+              echo "No explicit previous tag found in sequence for comparison. Will use current tag for comparison start."
+              PREVIOUS_TAG_FOR_COMPARE="$CURRENT_RELEASE_TAG" # Compares current tag to itself for first release
+            fi
           fi
-          echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          echo "PREVIOUS_TAG_FOR_COMPARE=$PREVIOUS_TAG_FOR_COMPARE" >> $GITHUB_OUTPUT
         shell: bash
 
-
       - name: Create GitHub Release
+        # This step will now always run if the build_and_release_android job ran successfully.
+        # The `ref` in checkout ensures we are on the correct tag/commit.
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          # Construct the body with the generic link
+          tag_name: ${{ steps.get_versions.outputs.CURRENT_RELEASE_TAG }} # Use the determined tag
+          name: Release ${{ steps.get_versions.outputs.CURRENT_RELEASE_TAG }}
           body: |
             Automated Android APK Release.
             Version: ${{ steps.get_versions.outputs.APP_VERSION }}
 
             For detailed changes, please refer to the Git comparison between
-            `${{ steps.get_versions.outputs.PREVIOUS_TAG }}` and `${{ github.ref_name }}`:
-            https://github.com/${{ github.repository }}/compare/${{ steps.get_versions.outputs.PREVIOUS_TAG }}...${{ github.ref_name }}
+            `${{ steps.get_versions.outputs.PREVIOUS_TAG_FOR_COMPARE }}` and `${{ steps.get_versions.outputs.CURRENT_RELEASE_TAG }}`:
+            https://github.com/${{ github.repository }}/compare/${{ steps.get_versions.outputs.PREVIOUS_TAG_FOR_COMPARE }}...${{ steps.get_versions.outputs.CURRENT_RELEASE_TAG }}
           files: build/app/outputs/apk/release/*.apk
           prerelease: false
           draft: false
