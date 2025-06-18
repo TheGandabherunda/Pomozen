@@ -1,23 +1,22 @@
 name: Android Release Build
 
 on:
-  push:
-    branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
-  workflow_dispatch:
+  workflow_dispatch: # This makes the workflow runnable manually from the GitHub Actions UI
+    inputs:
+      branch:
+        description: 'Branch to build from' # This is the label the user sees
+        required: true                   # User must provide a value
+        default: 'main'                  # Pre-fills the input field with 'main'
 
 jobs:
   build_android_apk:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Using Ubuntu for Android builds
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }} # <<< IMPORTANT CHANGE: Use the input branch here
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -55,5 +54,5 @@ jobs:
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
+          name: app-release-apk # Name of the artifact
           path: build/app/outputs/apk/release/
