@@ -31,7 +31,7 @@ android {
     }
 
     lintOptions {
-        checkReleaseBuilds false
+        isCheckReleaseBuilds = false
     }
 
     defaultConfig {
