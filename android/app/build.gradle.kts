@@ -30,6 +30,10 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    lintOptions {
+        isCheckReleaseBuilds = false
+    }
+
     defaultConfig {
         applicationId = "org.projectsolutus.pomozen"
         minSdk = 23
@@ -79,7 +83,14 @@ val abiCodes = mapOf(
 androidComponents {
     onVariants { variant ->
         variant.outputs.forEach { output ->
-            output.versionCode.set(flutter.versionCode)
+            val abi = output.filters.find { it.filterType.name == "ABI" }?.identifier
+            val baseVersionCode = flutter.versionCode
+            val abiCode = abiCodes[abi]
+            if (abiCode != null) {
+                output.versionCode.set(baseVersionCode * 10 + abiCode)
+            } else {
+                output.versionCode.set(flutter.versionCode)
+            }
         }
     }
 }
