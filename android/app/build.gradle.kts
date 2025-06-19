@@ -30,6 +30,10 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
     defaultConfig {
         applicationId = "org.projectsolutus.pomozen"
         minSdk = 23
