@@ -64,7 +64,7 @@ import 'app_localizations_kn.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -87,17 +87,17 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('hi'),
-    Locale('kn'),
+    Locale('kn')
   ];
 
   /// No description provided for @pomodoroTimer.
@@ -1605,6 +1605,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Water reminder cancelled.'**
   String get waterReminderCancelled;
+
+  /// No description provided for @pomodoroTimerInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure the durations for your focus sessions, short breaks, and long breaks, as well as the number of sessions before a long break.'**
+  String get pomodoroTimerInfo;
+
+  /// No description provided for @notificationsAndAlertsInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage how Pomozen notifies you about session changes and other reminders. You can enable or disable various alerts.'**
+  String get notificationsAndAlertsInfo;
+
+  /// No description provided for @generalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'General application settings, including language preferences.'**
+  String get generalInfo;
+
+  /// No description provided for @wellnessInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings related to your well-being, such as water reminders to help you stay hydrated.'**
+  String get wellnessInfo;
+
+  /// No description provided for @appColorsInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize the look and feel of the app by selecting different color themes and primary, secondary, and tertiary colors.'**
+  String get appColorsInfo;
+
+  /// No description provided for @dataInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your Pomozen data. You can export your session history and settings for backup, or import data from a previous backup. You can also reset all data.'**
+  String get dataInfo;
+
+  /// No description provided for @focusDurationSlider.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Duration'**
+  String get focusDurationSlider;
+
+  /// No description provided for @shortBreakSlider.
+  ///
+  /// In en, this message translates to:
+  /// **'Short Break'**
+  String get shortBreakSlider;
+
+  /// No description provided for @longBreakSlider.
+  ///
+  /// In en, this message translates to:
+  /// **'Long Break'**
+  String get longBreakSlider;
+
+  /// No description provided for @sessionsSlider.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get sessionsSlider;
+
+  /// No description provided for @aboutAndLegalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Information about the application, including version details, terms and conditions, and privacy policy.'**
+  String get aboutAndLegalInfo;
 }
 
 class _AppLocalizationsDelegate
@@ -1636,9 +1702,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

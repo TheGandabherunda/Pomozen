@@ -75,9 +75,9 @@ class SettingsService extends GetxService {
   final waterReminderType = 'notification'.obs; // Default to notification ('notification' or 'alarm')
 
   // Reactive Properties for Selected Theme Colors
-  final selectedPrimaryColorName = 'Cyan'.obs;
-  final selectedSecondaryColorName = 'Pink'.obs;
-  final selectedTertiaryColorName = 'Yellow'.obs;
+  final selectedPrimaryColorName = 'Blue'.obs;
+  final selectedSecondaryColorName = 'Yellow'.obs;
+  final selectedTertiaryColorName = 'Green'.obs;
 
   // Initialization
   Future<void> init() async {
@@ -160,14 +160,14 @@ class SettingsService extends GetxService {
         'Loaded notificationPermissionAsked: ${notificationPermissionAsked.value}');
 
     selectedPrimaryColorName.value =
-        _settingsBox.get(_selectedPrimaryColorNameKey, defaultValue: 'Cyan');
+        _settingsBox.get(_selectedPrimaryColorNameKey, defaultValue: 'Blue');
     print('Loaded selectedPrimaryColorName: ${selectedPrimaryColorName.value}');
     selectedSecondaryColorName.value =
-        _settingsBox.get(_selectedSecondaryColorNameKey, defaultValue: 'Pink');
+        _settingsBox.get(_selectedSecondaryColorNameKey, defaultValue: 'Yellow');
     print(
         'Loaded selectedSecondaryColorName: ${selectedSecondaryColorName.value}');
     selectedTertiaryColorName.value =
-        _settingsBox.get(_selectedTertiaryColorNameKey, defaultValue: 'Yellow');
+        _settingsBox.get(_selectedTertiaryColorNameKey, defaultValue: 'Green');
     print(
         'Loaded selectedTertiaryColorName: ${selectedTertiaryColorName.value}');
 
@@ -364,9 +364,9 @@ class SettingsService extends GetxService {
     await setSelectedStatsLabel(null);
     await setEnableGlyphProgress(false);
     await setNotificationPermissionAsked(false);
-    await setSelectedPrimaryColorName('Cyan');
-    await setSelectedSecondaryColorName('Pink');
-    await setSelectedTertiaryColorName('Yellow');
+    await setSelectedPrimaryColorName('Blue');
+    await setSelectedSecondaryColorName('Yellow');
+    await setSelectedTertiaryColorName('Green');
     // NEW: Reset Water Reminder settings
     await setWaterReminderEnabled(false);
     await setWaterReminderIntervalMinutes(30);
