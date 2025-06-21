@@ -30,8 +30,8 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
-    lintOptions {
-        isCheckReleaseBuilds = false
+    lint {
+        checkReleaseBuilds = false
     }
 
     defaultConfig {

@@ -808,4 +808,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waterReminderCancelled => 'Water reminder cancelled.';
+
+  @override
+  String get pomodoroTimerInfo =>
+      'Configure the durations for your focus sessions, short breaks, and long breaks, as well as the number of sessions before a long break.';
+
+  @override
+  String get notificationsAndAlertsInfo =>
+      'Manage how Pomozen notifies you about session changes and other reminders. You can enable or disable various alerts.';
+
+  @override
+  String get generalInfo =>
+      'General application settings, including language preferences.';
+
+  @override
+  String get wellnessInfo =>
+      'Settings related to your well-being, such as water reminders to help you stay hydrated.';
+
+  @override
+  String get appColorsInfo =>
+      'Customize the look and feel of the app by selecting different color themes and primary, secondary, and tertiary colors.';
+
+  @override
+  String get dataInfo =>
+      'Manage your Pomozen data. You can export your session history and settings for backup, or import data from a previous backup. You can also reset all data.';
+
+  @override
+  String get focusDurationSlider => 'Focus Duration';
+
+  @override
+  String get shortBreakSlider => 'Short Break';
+
+  @override
+  String get longBreakSlider => 'Long Break';
+
+  @override
+  String get sessionsSlider => 'Sessions';
+
+  @override
+  String get aboutAndLegalInfo =>
+      'Information about the application, including version details, terms and conditions, and privacy policy.';
 }

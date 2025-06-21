@@ -811,4 +811,44 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get waterReminderCancelled =>
       'पानी पीने का रिमाइंडर रद्द कर दिया गया है।';
+
+  @override
+  String get pomodoroTimerInfo =>
+      'अपने फोकस सत्रों, छोटे ब्रेक, लंबे ब्रेक की अवधि और लंबे ब्रेक से पहले सत्रों की संख्या को कॉन्फ़िगर करें।';
+
+  @override
+  String get notificationsAndAlertsInfo =>
+      'सेशन में बदलाव और अन्य रिमाइंडर्स के लिए Pomozen आपको कैसे सूचित करे, यह प्रबंधित करें। आप विभिन्न अलर्ट को सक्षम या अक्षम कर सकते हैं।';
+
+  @override
+  String get generalInfo =>
+      'सामान्य एप्लिकेशन सेटिंग्स, जैसे भाषा प्राथमिकताएं।';
+
+  @override
+  String get wellnessInfo =>
+      'आपके स्वास्थ्य से संबंधित सेटिंग्स, जैसे पानी पीने की याद दिलाने वाले रिमाइंडर।';
+
+  @override
+  String get appColorsInfo =>
+      'ऐप के रूप और अनुभव को विभिन्न रंग थीम और प्राथमिक, द्वितीयक और तृतीयक रंग चुनकर अनुकूलित करें।';
+
+  @override
+  String get dataInfo =>
+      'अपने Pomozen डेटा का प्रबंधन करें। आप सत्र इतिहास और सेटिंग्स को बैकअप के लिए निर्यात कर सकते हैं, या पिछले बैकअप से डेटा आयात कर सकते हैं। आप सभी डेटा को रीसेट भी कर सकते हैं।';
+
+  @override
+  String get focusDurationSlider => 'फोकस अवधि';
+
+  @override
+  String get shortBreakSlider => 'छोटा ब्रेक';
+
+  @override
+  String get longBreakSlider => 'लंबा ब्रेक';
+
+  @override
+  String get sessionsSlider => 'सत्र';
+
+  @override
+  String get aboutAndLegalInfo =>
+      'एप्लिकेशन से संबंधित जानकारी, जिसमें संस्करण विवरण, नियम और शर्तें, तथा गोपनीयता नीति शामिल हैं।';
 }

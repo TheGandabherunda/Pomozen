@@ -253,7 +253,6 @@
   "thirdPartyLibrariesTitle": "Third-Party Libraries",
   "thirdPartyLibrariesIntro": "This app uses third-party libraries, each under its own license. We thank the open-source community. 🛠️",
   "termsAndConditionsEnd": "By using Pomozen, you agree to these terms. If you disagree, please do not use the app. Thank you for choosing mindful productivity! ✨",
-
   "linksTitle": "Links",
   "sourceCodeLink": "Source Code",
   "sendFeedbackLink": "Send Feedback",
@@ -272,5 +271,16 @@
   "wellness": "Wellness",
   "customIntervalRemoved": "Custom interval removed",
   "waterReminderEnabled": "Water reminder enabled.",
-  "waterReminderCancelled": "Water reminder cancelled."
+  "waterReminderCancelled": "Water reminder cancelled.",
+  "pomodoroTimerInfo": "Configure the durations for your focus sessions, short breaks, and long breaks, as well as the number of sessions before a long break.",
+  "notificationsAndAlertsInfo": "Manage how Pomozen notifies you about session changes and other reminders. You can enable or disable various alerts.",
+  "generalInfo": "General application settings, including language preferences.",
+  "wellnessInfo": "Settings related to your well-being, such as water reminders to help you stay hydrated.",
+  "appColorsInfo": "Customize the look and feel of the app by selecting different color themes and primary, secondary, and tertiary colors.",
+  "dataInfo": "Manage your Pomozen data. You can export your session history and settings for backup, or import data from a previous backup. You can also reset all data.",
+  "focusDurationSlider": "Focus Duration",
+  "shortBreakSlider": "Short Break",
+  "longBreakSlider": "Long Break",
+  "sessionsSlider": "Sessions",
+  "aboutAndLegalInfo": "Information about the application, including version details, terms and conditions, and privacy policy."
 }
