@@ -31,14 +31,15 @@ class SettingsService extends GetxService {
   static const String _startOfWeekKey = 'startOfWeek';
   static const String _themeModeKey = 'themeMode';
   static const String _selectedStatsLabelKey = 'selectedStatsLabel';
-  static const String _enableGlyphProgressKey = 'enableGlyphProgress';
   static const String _notificationPermissionAskedKey =
       'notificationPermissionAsked';
 
   // NEW: Keys for Water Reminder Settings
   static const String _waterReminderEnabledKey = 'waterReminderEnabled';
-  static const String _waterReminderIntervalMinutesKey = 'waterReminderIntervalMinutes';
-  static const String _waterReminderTypeKey = 'waterReminderType'; // 'notification' or 'alarm'
+  static const String _waterReminderIntervalMinutesKey =
+      'waterReminderIntervalMinutes';
+  static const String _waterReminderTypeKey =
+      'waterReminderType'; // 'notification' or 'alarm'
 
   // Keys for Selected Theme Colors
   static const String _selectedPrimaryColorNameKey = 'selectedPrimaryColorName';
@@ -66,13 +67,13 @@ class SettingsService extends GetxService {
   final startOfWeek = 1.obs;
   final themeMode = ThemeMode.system.obs;
   final selectedStatsLabel = Rxn<Map<String, dynamic>>();
-  final enableGlyphProgress = false.obs;
   final notificationPermissionAsked = false.obs;
 
   // NEW: Reactive Properties for Water Reminder Settings
   final waterReminderEnabled = false.obs;
   final waterReminderIntervalMinutes = 30.obs; // Default to 30 minutes
-  final waterReminderType = 'notification'.obs; // Default to notification ('notification' or 'alarm')
+  final waterReminderType =
+      'notification'.obs; // Default to notification ('notification' or 'alarm')
 
   // Reactive Properties for Selected Theme Colors
   final selectedPrimaryColorName = 'Blue'.obs;
@@ -115,7 +116,7 @@ class SettingsService extends GetxService {
     print('Loaded language: ${language.value}');
 
     final List<dynamic> loadedLabels =
-    _settingsBox.get(_labelsKey, defaultValue: []);
+        _settingsBox.get(_labelsKey, defaultValue: []);
     labels.value =
         loadedLabels.map((e) => Map<String, dynamic>.from(e)).toList();
     print('Loaded active labels: ${labels.value}');
@@ -135,7 +136,7 @@ class SettingsService extends GetxService {
     final String? themeModeString = _settingsBox.get(_themeModeKey);
     if (themeModeString != null) {
       themeMode.value = ThemeMode.values.firstWhere(
-            (e) => e.toString() == themeModeString,
+        (e) => e.toString() == themeModeString,
         orElse: () => ThemeMode.system,
       );
     } else {
@@ -144,15 +145,11 @@ class SettingsService extends GetxService {
     print('Loaded themeMode: ${themeMode.value}');
 
     final Map<dynamic, dynamic>? loadedSelectedStatsLabel =
-    _settingsBox.get(_selectedStatsLabelKey);
+        _settingsBox.get(_selectedStatsLabelKey);
     selectedStatsLabel.value = loadedSelectedStatsLabel != null
         ? Map<String, dynamic>.from(loadedSelectedStatsLabel)
         : null;
     print('Loaded selectedStatsLabel: ${selectedStatsLabel.value}');
-
-    enableGlyphProgress.value =
-        _settingsBox.get(_enableGlyphProgressKey, defaultValue: false);
-    print('Loaded enableGlyphProgress: ${enableGlyphProgress.value}');
 
     notificationPermissionAsked.value =
         _settingsBox.get(_notificationPermissionAskedKey, defaultValue: false);
@@ -162,8 +159,8 @@ class SettingsService extends GetxService {
     selectedPrimaryColorName.value =
         _settingsBox.get(_selectedPrimaryColorNameKey, defaultValue: 'Blue');
     print('Loaded selectedPrimaryColorName: ${selectedPrimaryColorName.value}');
-    selectedSecondaryColorName.value =
-        _settingsBox.get(_selectedSecondaryColorNameKey, defaultValue: 'Yellow');
+    selectedSecondaryColorName.value = _settingsBox
+        .get(_selectedSecondaryColorNameKey, defaultValue: 'Yellow');
     print(
         'Loaded selectedSecondaryColorName: ${selectedSecondaryColorName.value}');
     selectedTertiaryColorName.value =
@@ -172,11 +169,15 @@ class SettingsService extends GetxService {
         'Loaded selectedTertiaryColorName: ${selectedTertiaryColorName.value}');
 
     // NEW: Load Water Reminder Settings
-    waterReminderEnabled.value = _settingsBox.get(_waterReminderEnabledKey, defaultValue: false);
+    waterReminderEnabled.value =
+        _settingsBox.get(_waterReminderEnabledKey, defaultValue: false);
     print('Loaded waterReminderEnabled: ${waterReminderEnabled.value}');
-    waterReminderIntervalMinutes.value = _settingsBox.get(_waterReminderIntervalMinutesKey, defaultValue: 30);
-    print('Loaded waterReminderIntervalMinutes: ${waterReminderIntervalMinutes.value}');
-    waterReminderType.value = _settingsBox.get(_waterReminderTypeKey, defaultValue: 'notification');
+    waterReminderIntervalMinutes.value =
+        _settingsBox.get(_waterReminderIntervalMinutesKey, defaultValue: 30);
+    print(
+        'Loaded waterReminderIntervalMinutes: ${waterReminderIntervalMinutes.value}');
+    waterReminderType.value =
+        _settingsBox.get(_waterReminderTypeKey, defaultValue: 'notification');
     print('Loaded waterReminderType: ${waterReminderType.value}');
   }
 
@@ -292,12 +293,6 @@ class SettingsService extends GetxService {
     print('Set selectedStatsLabel to: $value (persisted)');
   }
 
-  Future<void> setEnableGlyphProgress(bool value) async {
-    enableGlyphProgress.value = value;
-    await _settingsBox.put(_enableGlyphProgressKey, value);
-    print('Set enableGlyphProgress to: $value (persisted)');
-  }
-
   Future<void> setNotificationPermissionAsked(bool value) async {
     notificationPermissionAsked.value = value;
     await _settingsBox.put(_notificationPermissionAskedKey, value);
@@ -362,7 +357,6 @@ class SettingsService extends GetxService {
     await setStartOfWeek(1);
     await setThemeMode(ThemeMode.system);
     await setSelectedStatsLabel(null);
-    await setEnableGlyphProgress(false);
     await setNotificationPermissionAsked(false);
     await setSelectedPrimaryColorName('Blue');
     await setSelectedSecondaryColorName('Yellow');
