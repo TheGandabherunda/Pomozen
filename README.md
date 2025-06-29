@@ -36,10 +36,6 @@ concentration, and improve efficiency in work or study.
 - **💧 Hydration Reminder**  
   Get timely reminders to drink water and stay hydrated throughout your day.
 
-- **🔆 Glyph Progress Integration**  
-  On supported Android devices, visual Glyph cues show Pomodoro progress at a glance. (See settings  
-  for compatibility.)
-
 - **🧘 Minimal Design**  
   Clean, focused interface built with minimalism at its core—balanced spacing, calm colors, and no  
   distractions.
@@ -86,8 +82,6 @@ or third parties.
 1. Download the latest release from the [Releases Page](#).
 2. Install the APK on your Android device.
 3. Open **Pomozen** and adjust your Pomodoro settings to fit your workflow.
-
-> ⚠️ Note: Glyph Interface support requires a compatible Android device.
 
 ---
 

@@ -9,7 +9,6 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:nothing_glyph_interface/nothing_glyph_interface.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:torch_light/torch_light.dart';
@@ -28,17 +27,6 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   // Service and Plugin Instances
   final SettingsService settingsService;
   final DoNotDisturbPlugin _dndPlugin = DoNotDisturbPlugin();
-  late NothingGlyphInterface _glyphInterfacePlugin;
-
-  // Nothing Phone compatibility flags and state
-  final isPhone1 = false.obs;
-  final isPhone2 = false.obs;
-  final isPhone2a = false.obs;
-  final isPhone2aPlus = false.obs;
-  final isNothingPhone = false.obs;
-  final glyphConnected = false.obs;
-  bool _glyphFrameSetup = false;
-  int _lastGlyphProgressValue = -1;
 
   // Constructor
   PomodoroController(this.settingsService);
@@ -90,8 +78,6 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     });
 
     _setInitialTimer();
-    _initializeGlyphInterface();
-    _checkNothingPhoneCompatibility();
 
     totalSessions.value = settingsService.totalSessions.value;
 
@@ -119,23 +105,12 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     if (settingsService.dndToggle.value) {
       _setDndInterruptionFilter(InterruptionFilter.all);
     }
-    turnOffGlyph();
-    _lastGlyphProgressValue = -1;
     super.onClose();
   }
 
   /// Acknowledges the app start animation to reset its trigger.
   void acknowledgeAppStartAnimation() {
     triggerAppStartAnimation.value = false;
-  }
-
-  /// Initializes the Glyph Interface plugin and listens for connection changes.
-  void _initializeGlyphInterface() {
-    _glyphInterfacePlugin = NothingGlyphInterface();
-    _glyphInterfacePlugin.onServiceConnection.listen((bool connected) {
-      glyphConnected.value = connected;
-      if (!connected) _glyphFrameSetup = false;
-    });
   }
 
   /// Sets up listeners for various settings changes to update timer and notification states.
@@ -158,43 +133,29 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     ever(settingsService.labels, (_) {
       if (currentLabel.value != null &&
           !settingsService.labels.any((label) =>
-          label['name'].toString() ==
-              currentLabel.value!['name'].toString() &&
+              label['name'].toString() ==
+                  currentLabel.value!['name'].toString() &&
               label['color'] == currentLabel.value!['color'])) {
         currentLabel.value = null;
       }
     });
 
-    settingsService.enableGlyphProgress.listen((isEnabled) async {
-      if (!isEnabled) {
-        await turnOffGlyph();
-        _glyphFrameSetup = false;
-        _lastGlyphProgressValue = -1;
-      } else {
-        if (isRunning.value && isNothingPhone.value && glyphConnected.value) {
-          _glyphFrameSetup = false;
-          await _setupGlyphFrame();
-          _updateGlyphProgress((progress.value * 100).clamp(0, 100).round());
-        }
-      }
-    });
-
     ever(settingsService.dailyReminderTimeHour, (_) => scheduleDailyReminder());
     ever(settingsService.dailyReminderTimeMinute,
-            (_) => scheduleDailyReminder());
+        (_) => scheduleDailyReminder());
 
     // Consolidate water reminder setting listeners
-    settingsService.waterReminderEnabled.listen((_) =>
-        _updateWaterReminderState());
-    settingsService.waterReminderIntervalMinutes.listen((_) =>
-        _updateWaterReminderState());
-    settingsService.waterReminderType.listen((_) =>
-        _updateWaterReminderState());
+    settingsService.waterReminderEnabled
+        .listen((_) => _updateWaterReminderState());
+    settingsService.waterReminderIntervalMinutes
+        .listen((_) => _updateWaterReminderState());
+    settingsService.waterReminderType
+        .listen((_) => _updateWaterReminderState());
   }
 
   /// Updates the timer duration when settings change, adjusting `currentTime` if running.
-  Future<void> _updateTimerDuration(int newDurationMinutes,
-      PomodoroMode mode) async {
+  Future<void> _updateTimerDuration(
+      int newDurationMinutes, PomodoroMode mode) async {
     final newTotalSeconds = newDurationMinutes * 60.0;
     if (isRunning.value && currentMode.value == mode) {
       final double elapsedSeconds = totalTime.value - currentTime.value;
@@ -205,81 +166,8 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
         currentTime.value = totalTime.value;
       }
       progress.value = 1.0 - (currentTime.value / totalTime.value);
-      if (isNothingPhone.value &&
-          settingsService.enableGlyphProgress.value &&
-          glyphConnected.value) {
-        _glyphFrameSetup = false;
-        await _setupGlyphFrame();
-      }
-      _updateGlyphProgress((progress.value * 100).clamp(0, 100).round());
     } else {
       _setInitialTimer();
-    }
-  }
-
-  // Nothing Phone Compatibility Methods
-  /// Checks for Nothing Phone model compatibility.
-  void _checkNothingPhoneCompatibility() async {
-    isPhone1.value = (await _glyphInterfacePlugin.is20111()) ?? false;
-    isPhone2.value = (await _glyphInterfacePlugin.is22111()) ?? false;
-    isPhone2a.value = (await _glyphInterfacePlugin.is23111()) ?? false;
-    isPhone2aPlus.value = (await _glyphInterfacePlugin.is23113()) ?? false;
-    isNothingPhone.value = isPhone1.value ||
-        isPhone2.value ||
-        isPhone2a.value ||
-        isPhone2aPlus.value;
-  }
-
-  /// Sets up the glyph frame for progress display if not already set up.
-  Future<void> _setupGlyphFrame() async {
-    if (_glyphFrameSetup) return;
-    try {
-      final builder = GlyphFrameBuilder();
-      builder.buildChannelC();
-      await _glyphInterfacePlugin.buildGlyphFrame(builder.build());
-      _glyphFrameSetup = true;
-    } catch (e) {
-      print('Failed to setup glyph frame: $e');
-    }
-  }
-
-  /// Turns off the Glyph Interface lights.
-  Future<void> turnOffGlyph() async {
-    if (!isNothingPhone.value || !glyphConnected.value) return;
-    try {
-      await _glyphInterfacePlugin.turnOff();
-      _lastGlyphProgressValue = -1;
-    } catch (e) {
-      print('turnOffGlyph: Error: $e');
-    }
-  }
-
-  /// Resets the glyph progress to zero.
-  Future<void> resetGlyphProgress() async {
-    if (!isNothingPhone.value || !glyphConnected.value) return;
-    try {
-      await _setupGlyphFrame();
-      await _glyphInterfacePlugin.displayProgress(0);
-      _lastGlyphProgressValue = -1;
-    } catch (e) {
-      print('resetGlyphProgress: Error resetting glyph progress: $e');
-    }
-  }
-
-  /// Updates the Glyph Interface progress display.
-  Future<void> _updateGlyphProgress(int glyphProgressValue) async {
-    if (!isNothingPhone.value ||
-        !settingsService.enableGlyphProgress.value ||
-        !glyphConnected.value) {
-      return;
-    }
-    try {
-      if (!_glyphFrameSetup) {
-        await _setupGlyphFrame();
-      }
-      await _glyphInterfacePlugin.displayProgress(glyphProgressValue);
-    } catch (e) {
-      print('Error updating glyph progress to $glyphProgressValue: $e');
     }
   }
 
@@ -300,7 +188,6 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     currentTime.value = totalTime.value;
     progress.value = 0.0;
     _saveTimerState(immediate: true);
-    resetGlyphProgress();
   }
 
   /// Starts the Pomodoro timer.
@@ -314,36 +201,17 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
       await _setDndInterruptionFilter(InterruptionFilter.alarms);
     }
 
-    if (settingsService.enableGlyphProgress.value &&
-        isNothingPhone.value &&
-        glyphConnected.value) {
-      _glyphFrameSetup = false;
-      await _setupGlyphFrame();
-      _updateGlyphProgress((progress.value * 100).clamp(0, 100).round());
-    }
-
     _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       if (currentTime.value > 0) {
         currentTime.value -= 0.1;
         progress.value = 1.0 - (currentTime.value / totalTime.value);
         _saveTimerState();
 
-        int glyphProgressValue = (progress.value * 100).clamp(0, 100).round();
-        if (settingsService.enableGlyphProgress.value &&
-            isNothingPhone.value &&
-            glyphConnected.value) {
-          if (glyphProgressValue != _lastGlyphProgressValue) {
-            _updateGlyphProgress(glyphProgressValue);
-            _lastGlyphProgressValue = glyphProgressValue;
-          }
-        }
         _showOngoingNotification();
       } else {
         _timer?.cancel();
         isRunning.value = false;
         _handleModeCompletion();
-        resetGlyphProgress();
-        _lastGlyphProgressValue = -1;
       }
     });
   }
@@ -373,20 +241,12 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     if (settingsService.dndToggle.value) {
       await _setDndInterruptionFilter(InterruptionFilter.all);
     }
-    if (isNothingPhone.value && glyphConnected.value) {
-      await turnOffGlyph();
-      _lastGlyphProgressValue = -1;
-    }
   }
 
   /// Skips to the next Pomodoro mode.
   void skipToNextMode() {
     pauseTimer();
     _handleModeCompletion(skipped: true);
-    if (isNothingPhone.value && glyphConnected.value) {
-      turnOffGlyph();
-      _lastGlyphProgressValue = -1;
-    }
   }
 
   /// Handles actions to be performed upon completion or skipping of a Pomodoro mode.
@@ -521,15 +381,14 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
 
   /// Initializes Awesome Notifications with channels and groups.
   Future<void> _initializeNotifications() async {
-
     await AwesomeNotifications().setListeners(
       onActionReceivedMethod: NotificationController.onActionReceivedMethod,
       onNotificationCreatedMethod:
-      NotificationController.onNotificationCreatedMethod,
+          NotificationController.onNotificationCreatedMethod,
       onNotificationDisplayedMethod:
-      NotificationController.onNotificationDisplayedMethod,
+          NotificationController.onNotificationDisplayedMethod,
       onDismissActionReceivedMethod:
-      NotificationController.onDismissActionReceivedMethod,
+          NotificationController.onDismissActionReceivedMethod,
     );
 
     await AwesomeNotifications().initialize(
@@ -623,7 +482,7 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     _isPermissionRequestInProgress = true;
     try {
       bool granted =
-      await AwesomeNotifications().requestPermissionToSendNotifications();
+          await AwesomeNotifications().requestPermissionToSendNotifications();
       return granted;
     } finally {
       _isPermissionRequestInProgress = false;
@@ -655,33 +514,29 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     }
 
     final notificationsAllowed =
-    await AwesomeNotifications().isNotificationAllowed();
+        await AwesomeNotifications().isNotificationAllowed();
 
     if (!notificationsAllowed) {
       Fluttertoast.showToast(
           msg:
-          'Notification permission denied. Please enable notifications in app settings to receive daily reminders.');
+              'Notification permission denied. Please enable notifications in app settings to receive daily reminders.');
       return;
     }
 
     final String reminderTitle = Get.context != null
-        ? AppLocalizations
-        .of(Get.context!)
-        ?.dailyReminderNotificationTitle ??
-        'Time to Focus!'
+        ? AppLocalizations.of(Get.context!)?.dailyReminderNotificationTitle ??
+            'Time to Focus!'
         : 'Time to Focus!';
     final String reminderBody = Get.context != null
-        ? AppLocalizations
-        .of(Get.context!)
-        ?.dailyReminderNotificationBody ??
-        "Don't forget to start your Pomodoro session."
+        ? AppLocalizations.of(Get.context!)?.dailyReminderNotificationBody ??
+            "Don't forget to start your Pomodoro session."
         : "Don't forget to start your Pomodoro session.";
 
     try {
       final now = tz.TZDateTime.now(tz.local);
 
       var scheduledDate =
-      tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+          tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
 
       if (scheduledDate.isBefore(now) || scheduledDate.isAtSameMomentAs(now)) {
         scheduledDate = scheduledDate.add(const Duration(days: 1));
@@ -729,7 +584,7 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
 
       final pending = await AwesomeNotifications().listScheduledNotifications();
       final dailyReminderPending =
-      pending.where((n) => n.content?.id == 3).toList();
+          pending.where((n) => n.content?.id == 3).toList();
 
       if (dailyReminderPending.isEmpty) {
         await _scheduleDailyReminderFallback(
@@ -758,7 +613,7 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     }
 
     final notificationsAllowed =
-    await AwesomeNotifications().isNotificationAllowed();
+        await AwesomeNotifications().isNotificationAllowed();
     if (!notificationsAllowed) {
       // If notifications are not allowed, do not schedule.
       // The UI layer or _updateWaterReminderState should handle showing toasts.
@@ -773,7 +628,7 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     if (intervalMinutes <= 0) {
       Fluttertoast.showToast(
           msg:
-          'Water reminder interval must be greater than 0 minutes. Please set a valid interval.');
+              'Water reminder interval must be greater than 0 minutes. Please set a valid interval.');
       return;
     }
 
@@ -782,7 +637,7 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
         : localizations.waterReminderAlarmTitle ?? 'Drink Water!';
     final String body = reminderType == 'notification'
         ? localizations.waterReminderNotificationBody ??
-        'Stay hydrated for better focus.'
+            'Stay hydrated for better focus.'
         : localizations.waterReminderAlarmBody ?? 'It\'s time to hydrate.';
 
     final String channelKey = reminderType == 'notification'
@@ -813,19 +668,19 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
       ),
       actionButtons: reminderType == 'alarm'
           ? [
-        NotificationActionButton(
-          actionType: ActionType.SilentBackgroundAction,
-          key: 'stop_water_alarm',
-          label: 'Stop',
-          autoDismissible: true,
-        ),
-      ]
+              NotificationActionButton(
+                actionType: ActionType.SilentBackgroundAction,
+                key: 'stop_water_alarm',
+                label: 'Stop',
+                autoDismissible: true,
+              ),
+            ]
           : null,
     );
 
     final pending = await AwesomeNotifications().listScheduledNotifications();
     final waterReminderPending =
-    pending.where((n) => n.content?.id == notificationId).toList();
+        pending.where((n) => n.content?.id == notificationId).toList();
 
     if (waterReminderPending.isEmpty) {
       print(
@@ -878,8 +733,8 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   }
 
   /// Provides a fallback mechanism for scheduling daily reminders if the primary method fails.
-  Future<void> _scheduleDailyReminderFallback(int hour, int minute,
-      String title, String body) async {
+  Future<void> _scheduleDailyReminderFallback(
+      int hour, int minute, String title, String body) async {
     final now = DateTime.now();
     var scheduledDate = DateTime(now.year, now.month, now.day, hour, minute);
     if (scheduledDate.isBefore(now) || scheduledDate.isAtSameMomentAs(now)) {
@@ -915,30 +770,26 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
     _foregroundReminderTimer?.cancel();
     _foregroundReminderTimer =
         Timer.periodic(const Duration(seconds: 10), (_) async {
-          final hour = settingsService.dailyReminderTimeHour.value;
-          final minute = settingsService.dailyReminderTimeMinute.value;
-          if (hour != null && minute != null) {
-            final now = DateTime.now();
-            if (now.hour == hour && now.minute == minute && now.second < 10) {
-              showDailyReminderNow();
-            }
-          }
-        });
+      final hour = settingsService.dailyReminderTimeHour.value;
+      final minute = settingsService.dailyReminderTimeMinute.value;
+      if (hour != null && minute != null) {
+        final now = DateTime.now();
+        if (now.hour == hour && now.minute == minute && now.second < 10) {
+          showDailyReminderNow();
+        }
+      }
+    });
   }
 
   /// Displays the daily reminder notification immediately.
   void showDailyReminderNow() {
     final String reminderTitle = Get.context != null
-        ? AppLocalizations
-        .of(Get.context!)
-        ?.dailyReminderNotificationTitle ??
-        'Time to Focus!'
+        ? AppLocalizations.of(Get.context!)?.dailyReminderNotificationTitle ??
+            'Time to Focus!'
         : 'Time to Focus!';
     final String reminderBody = Get.context != null
-        ? AppLocalizations
-        .of(Get.context!)
-        ?.dailyReminderNotificationBody ??
-        "Don't forget to start your Pomodoro session."
+        ? AppLocalizations.of(Get.context!)?.dailyReminderNotificationBody ??
+            "Don't forget to start your Pomodoro session."
         : "Don't forget to start your Pomodoro session.";
 
     AwesomeNotifications().createNotification(
@@ -1007,8 +858,8 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   }
 
   /// Plays a system alarm when a Pomodoro mode finishes.
-  void _playSystemAlarm(PomodoroMode completedMode,
-      BuildContext context) async {
+  void _playSystemAlarm(
+      PomodoroMode completedMode, BuildContext context) async {
     if (!settingsService.reminder.value || !settingsService.isAlarm.value) {
       return;
     }
@@ -1063,11 +914,11 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   Future<void> handleDndToggle(bool value) async {
     if (value) {
       final bool hasAccess =
-      await _dndPlugin.isNotificationPolicyAccessGranted();
+          await _dndPlugin.isNotificationPolicyAccessGranted();
       if (!hasAccess) {
         Fluttertoast.showToast(
             msg:
-            'Please grant Notification Policy Access to enable DND control.');
+                'Please grant Notification Policy Access to enable DND control.');
         settingsService.setDndToggle(false);
         await _dndPlugin.openNotificationPolicyAccessSettings();
       } else {
@@ -1097,9 +948,9 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
       'color': color.value,
     };
     final currentLabels =
-    List<Map<String, dynamic>>.from(settingsService.labels);
+        List<Map<String, dynamic>>.from(settingsService.labels);
     if (currentLabels.any((label) =>
-    label['name'].toString().toLowerCase() == name.toLowerCase())) {
+        label['name'].toString().toLowerCase() == name.toLowerCase())) {
       Fluttertoast.showToast(
           msg: AppLocalizations.of(Get.context!)!.labelAlreadyExists);
       return;
@@ -1109,11 +960,11 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   }
 
   /// Updates an existing label.
-  void updateLabel(Map<String, dynamic> oldLabel,
-      Map<String, dynamic> newLabel) {
+  void updateLabel(
+      Map<String, dynamic> oldLabel, Map<String, dynamic> newLabel) {
     final labels = settingsService.labels.value;
     final index = labels.indexWhere((l) =>
-    l['name'] == oldLabel['name'] && l['color'] == oldLabel['color']);
+        l['name'] == oldLabel['name'] && l['color'] == oldLabel['color']);
     if (index != -1) {
       labels[index] = {
         'name': newLabel['name'],
@@ -1131,9 +982,9 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   /// Deletes a label from the list.
   void deleteLabel(Map<String, dynamic> label) {
     final currentLabels =
-    List<Map<String, dynamic>>.from(settingsService.labels);
+        List<Map<String, dynamic>>.from(settingsService.labels);
     currentLabels.removeWhere(
-            (l) => l['name'] == label['name'] && l['color'] == label['color']);
+        (l) => l['name'] == label['name'] && l['color'] == label['color']);
     settingsService.setLabels(currentLabels);
     if (currentLabel.value?['name'] == label['name'] &&
         currentLabel.value?['color'] == label['color']) {
@@ -1154,8 +1005,7 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   String _formatTime(double seconds) {
     int minutes = (seconds ~/ 60);
     int remainingSeconds = (seconds % 60).ceil();
-    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString()
-        .padLeft(2, '0')}';
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
   // State Persistence
@@ -1200,9 +1050,8 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
           _parsePomodoroMode(state['currentMode'] ?? 'PomodoroMode.focus');
       final String? labelName = state['currentLabelName'];
       final dynamic storedColor = state['currentLabelColor'];
-      final int? labelColor = storedColor is double?
-          ? (storedColor)?.toInt()
-          : storedColor as int?;
+      final int? labelColor =
+          storedColor is double? ? (storedColor)?.toInt() : storedColor as int?;
 
       if (labelName != null && labelColor != null) {
         currentLabel.value = {

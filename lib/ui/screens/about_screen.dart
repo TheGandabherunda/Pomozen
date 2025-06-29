@@ -228,20 +228,6 @@ class _AboutScreenState extends State<AboutScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    localizations.featureGlyphProgress ??
-                        '• Glyph Progress integration (see settings screen for options).',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontFamily: 'OpenRunde',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: appColors.grey1,
-                    ),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 32),

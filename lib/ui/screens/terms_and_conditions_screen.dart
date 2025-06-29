@@ -28,7 +28,6 @@ class TermsAndConditionsScreen extends GetView {
       'permission_handler',
       'do_not_disturb',
       'flutter_heatmap_calendar',
-      'nothing_glyph_interface',
       'flutter_timezone',
       'android_intent_plus',
       'pie_chart_sz',
