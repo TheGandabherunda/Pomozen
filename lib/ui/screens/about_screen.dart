@@ -361,7 +361,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       size: 20, color: appColors.primary),
                   onTap: () =>
                       _launchURL(
-                          'https://projectsolutus.github.io/Pomozen/privacy_policy'), // Example link
+                          'https://thegandabherunda.github.io/Pomozen/privacy_policy'), // Example link
                 ),
               ],
             ),
