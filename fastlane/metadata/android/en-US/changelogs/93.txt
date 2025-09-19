@@ -1,0 +1,4 @@
+## v1.2.0
+
+### ✨ New Feature
+- **Timer Presets** : Users can now quickly select their timer values using predefined presets.

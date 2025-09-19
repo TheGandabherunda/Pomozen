@@ -32,7 +32,10 @@ concentration, and improve efficiency in work or study.
 - **⏰ Customizable Reminders**  
   Stay on track with personalized notifications. Smoothly transition between focus and break  
   periods.
-  
+
+- **⚡ Timer Presets**  
+  Quickly select timer values using predefined presets—no need to manually enter durations every time.
+
 - **💧 Hydration Reminder**  
   Get timely reminders to drink water and stay hydrated throughout your day.
 
