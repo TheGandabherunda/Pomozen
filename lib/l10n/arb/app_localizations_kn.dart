@@ -856,6 +856,54 @@ class AppLocalizationsKn extends AppLocalizations {
   String get sessionsSlider => 'ಸೆಷನ್‌ಗಳು';
 
   @override
+  String get update => 'ನವೀಕರಿಸಿ';
+
+  @override
   String get aboutAndLegalInfo =>
       'ಅಪ್ಲಿಕೇಶನ್ ಕುರಿತು ಮಾಹಿತಿಯನ್ನು ಒಳಗೊಂಡಿದೆ, ಇದರಲ್ಲಿ ಆವೃತ್ತಿ ವಿವರಗಳು, ನಿಬಂಧನೆಗಳು ಮತ್ತು ಗೌಪ್ಯತಾ ನಿತಿಯು ಸೇರಿವೆ.';
+
+  @override
+  String get timerPreset => 'ಟೈಮರ್ ಪ್ರಿಸೆಟ್';
+
+  @override
+  String get timerPresetInfo =>
+      'ನಿಮ್ಮ ನೆಚ್ಚಿನ ಟೈಮರ್ ಸಂರಚನೆಗಳನ್ನು ಉಳಿಸಿ ಮತ್ತು ತ್ವರಿತವಾಗಿ ಲೋಡ್ ಮಾಡಿ.';
+
+  @override
+  String get addPreset => 'ಪ್ರಿಸೆಟ್ ಸೇರಿಸಿ';
+
+  @override
+  String get editPreset => 'ಪ್ರಿಸೆಟ್ ಸಂಪಾದಿಸಿ';
+
+  @override
+  String get presetName => 'ಪ್ರಿಸೆಟ್ ಹೆಸರು';
+
+  @override
+  String get presetNameCannotBeEmpty => 'ಪ್ರಿಸೆಟ್ ಹೆಸರು ಖಾಲಿಯಾಗಿರಬಾರದು.';
+
+  @override
+  String get presetUpdated => 'ಪ್ರಿಸೆಟ್ ನವೀಕರಿಸಲಾಗಿದೆ.';
+
+  @override
+  String get presetSaved => 'ಪ್ರಿಸೆಟ್ ಉಳಿಸಲಾಗಿದೆ.';
+
+  @override
+  String get deletePresetTitle => 'ಪ್ರಿಸೆಟ್ ಅಳಿಸುವುದೇ?';
+
+  @override
+  String deletePresetConfirmation(Object presetName) {
+    return '\'$presetName\' ಪ್ರಿಸೆಟ್ ಅನ್ನು ಅಳಿಸಲು ನಿಮಗೆ ಖಚಿತವೇ? ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗುವುದಿಲ್ಲ.';
+  }
+
+  @override
+  String presetApplied(Object presetName) {
+    return '\'$presetName\' ಪ್ರಿಸೆಟ್ ಅನ್ವಯಿಸಲಾಗಿದೆ.';
+  }
+
+  @override
+  String get presetDeleted => 'ಪ್ರಿಸೆಟ್ ಅಳಿಸಲಾಗಿದೆ.';
+
+  @override
+  String get noPresetsAvailable =>
+      'ಯಾವುದೇ ಪ್ರಿಸೆಟ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ. ಒಂದನ್ನು ಸೇರಿಸಿ!';
 }

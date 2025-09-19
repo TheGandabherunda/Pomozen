@@ -52,7 +52,7 @@
   "reminderPermissionDenied": "Enable notifications in Settings to receive reminders and stay focused. ✨",
   "notificationPermissionDenied": "Enable notifications to stay connected. 🔔",
   "notificationPermissionDeniedAndGoToSettings": "Notification permission denied. Enable in Settings to receive reminders. 🔔",
-  "notificationPermissionRequiredForDailyReminder": "Enable notifications in Settings to set a daily reminder. �",
+  "notificationPermissionRequiredForDailyReminder": "Enable notifications in Settings to set a daily reminder. ",
   "storagePermissionDenied": "Enable 'Files and Media' permission in Settings to manage data. 🔒",
   "importPermissionRationale": "Grant 'Files and Media' permission in Settings to import your data. 🔒",
   "openSettings": "Open Settings",
@@ -282,5 +282,29 @@
   "shortBreakSlider": "Short Break",
   "longBreakSlider": "Long Break",
   "sessionsSlider": "Sessions",
-  "aboutAndLegalInfo": "Information about the application, including version details, terms and conditions, and privacy policy."
+  "update": "Update",
+  "aboutAndLegalInfo": "Information about the application, including version details, terms and conditions, and privacy policy.",
+  "timerPreset": "Timer Preset",
+  "timerPresetInfo": "Save and quickly load your favorite timer configurations.",
+  "addPreset": "Add Preset",
+  "editPreset": "Edit Preset",
+  "presetName": "Preset Name",
+  "presetNameCannotBeEmpty": "Preset name cannot be empty.",
+  "presetUpdated": "Preset updated.",
+  "presetSaved": "Preset saved.",
+  "deletePresetTitle": "Delete Preset?",
+  "deletePresetConfirmation": "Are you sure you want to delete the '{presetName}' preset? This action cannot be undone.",
+  "@deletePresetConfirmation": {
+    "placeholders": {
+      "presetName": {}
+    }
+  },
+  "presetApplied": "'{presetName}' preset applied.",
+  "@presetApplied": {
+    "placeholders": {
+      "presetName": {}
+    }
+  },
+  "presetDeleted": "Preset deleted.",
+  "noPresetsAvailable": "No presets available. Add one!"
 }

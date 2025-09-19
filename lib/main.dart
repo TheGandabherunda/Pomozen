@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // Third-party package imports
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pomozen/services/timer_preset.dart';
 
 // Project-specific imports
 import 'package:pomozen/controllers/pomodoro_controller.dart';
@@ -24,6 +25,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(SessionDataAdapter());
+  Hive.registerAdapter(TimerPresetAdapter()); // Register the new adapter
 
   // Service and Controller Dependency Injection
   final settingsService = SettingsService();
@@ -51,7 +53,7 @@ class MyApp extends StatelessWidget {
       // Theme Configuration
       final Brightness currentBrightness =
       settingsService.themeMode.value == ThemeMode.system
-          ? WidgetsBinding.instance.window.platformBrightness
+          ? View.of(context).platformDispatcher.platformBrightness
           : (settingsService.themeMode.value == ThemeMode.light
           ? Brightness.light
           : Brightness.dark);

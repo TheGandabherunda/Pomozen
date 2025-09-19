@@ -147,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationPermissionRequiredForDailyReminder =>
-      'Enable notifications in Settings to set a daily reminder. �';
+      'Enable notifications in Settings to set a daily reminder. ';
 
   @override
   String get storagePermissionDenied =>
@@ -846,6 +846,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionsSlider => 'Sessions';
 
   @override
+  String get update => 'Update';
+
+  @override
   String get aboutAndLegalInfo =>
       'Information about the application, including version details, terms and conditions, and privacy policy.';
+
+  @override
+  String get timerPreset => 'Timer Preset';
+
+  @override
+  String get timerPresetInfo =>
+      'Save and quickly load your favorite timer configurations.';
+
+  @override
+  String get addPreset => 'Add Preset';
+
+  @override
+  String get editPreset => 'Edit Preset';
+
+  @override
+  String get presetName => 'Preset Name';
+
+  @override
+  String get presetNameCannotBeEmpty => 'Preset name cannot be empty.';
+
+  @override
+  String get presetUpdated => 'Preset updated.';
+
+  @override
+  String get presetSaved => 'Preset saved.';
+
+  @override
+  String get deletePresetTitle => 'Delete Preset?';
+
+  @override
+  String deletePresetConfirmation(Object presetName) {
+    return 'Are you sure you want to delete the \'$presetName\' preset? This action cannot be undone.';
+  }
+
+  @override
+  String presetApplied(Object presetName) {
+    return '\'$presetName\' preset applied.';
+  }
+
+  @override
+  String get presetDeleted => 'Preset deleted.';
+
+  @override
+  String get noPresetsAvailable => 'No presets available. Add one!';
 }

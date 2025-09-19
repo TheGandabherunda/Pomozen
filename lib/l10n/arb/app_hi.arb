@@ -282,5 +282,29 @@
   "shortBreakSlider": "छोटा ब्रेक",
   "longBreakSlider": "लंबा ब्रेक",
   "sessionsSlider": "सत्र",
-  "aboutAndLegalInfo": "एप्लिकेशन से संबंधित जानकारी, जिसमें संस्करण विवरण, नियम और शर्तें, तथा गोपनीयता नीति शामिल हैं।"
+  "update": "अद्यतन",
+  "aboutAndLegalInfo": "एप्लिकेशन से संबंधित जानकारी, जिसमें संस्करण विवरण, नियम और शर्तें, तथा गोपनीयता नीति शामिल हैं।",
+  "timerPreset": "टाइमर प्रीसेट",
+  "timerPresetInfo": "अपने पसंदीदा टाइमर कॉन्फ़िगरेशन को सहेजें और जल्दी से लोड करें।",
+  "addPreset": "प्रीसेट जोड़ें",
+  "editPreset": "प्रीसेट संपादित करें",
+  "presetName": "प्रीसेट नाम",
+  "presetNameCannotBeEmpty": "प्रीसेट नाम खाली नहीं हो सकता।",
+  "presetUpdated": "प्रीसेट अपडेट किया गया।",
+  "presetSaved": "प्रीसेट सहेजा गया।",
+  "deletePresetTitle": "प्रीसेट हटाएं?",
+  "deletePresetConfirmation": "क्या आप वाकई '{presetName}' प्रीसेट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।",
+  "@deletePresetConfirmation": {
+    "placeholders": {
+      "presetName": {}
+    }
+  },
+  "presetApplied": "'{presetName}' प्रीसेट लागू किया गया।",
+  "@presetApplied": {
+    "placeholders": {
+      "presetName": {}
+    }
+  },
+  "presetDeleted": "प्रीसेट हटा दिया गया।",
+  "noPresetsAvailable": "कोई प्रीसेट उपलब्ध नहीं है। एक जोड़ें!"
 }

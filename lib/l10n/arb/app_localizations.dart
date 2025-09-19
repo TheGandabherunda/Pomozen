@@ -64,7 +64,7 @@ import 'app_localizations_kn.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -87,17 +87,17 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('hi'),
-    Locale('kn'),
+    Locale('kn')
   ];
 
   /// No description provided for @pomodoroTimer.
@@ -349,7 +349,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationPermissionRequiredForDailyReminder.
   ///
   /// In en, this message translates to:
-  /// **'Enable notifications in Settings to set a daily reminder. �'**
+  /// **'Enable notifications in Settings to set a daily reminder. '**
   String get notificationPermissionRequiredForDailyReminder;
 
   /// No description provided for @storagePermissionDenied.
@@ -1666,11 +1666,95 @@ abstract class AppLocalizations {
   /// **'Sessions'**
   String get sessionsSlider;
 
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get update;
+
   /// No description provided for @aboutAndLegalInfo.
   ///
   /// In en, this message translates to:
   /// **'Information about the application, including version details, terms and conditions, and privacy policy.'**
   String get aboutAndLegalInfo;
+
+  /// No description provided for @timerPreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer Preset'**
+  String get timerPreset;
+
+  /// No description provided for @timerPresetInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and quickly load your favorite timer configurations.'**
+  String get timerPresetInfo;
+
+  /// No description provided for @addPreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Preset'**
+  String get addPreset;
+
+  /// No description provided for @editPreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Preset'**
+  String get editPreset;
+
+  /// No description provided for @presetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset Name'**
+  String get presetName;
+
+  /// No description provided for @presetNameCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset name cannot be empty.'**
+  String get presetNameCannotBeEmpty;
+
+  /// No description provided for @presetUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset updated.'**
+  String get presetUpdated;
+
+  /// No description provided for @presetSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset saved.'**
+  String get presetSaved;
+
+  /// No description provided for @deletePresetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Preset?'**
+  String get deletePresetTitle;
+
+  /// No description provided for @deletePresetConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the \'{presetName}\' preset? This action cannot be undone.'**
+  String deletePresetConfirmation(Object presetName);
+
+  /// No description provided for @presetApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'\'{presetName}\' preset applied.'**
+  String presetApplied(Object presetName);
+
+  /// No description provided for @presetDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset deleted.'**
+  String get presetDeleted;
+
+  /// No description provided for @noPresetsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No presets available. Add one!'**
+  String get noPresetsAvailable;
 }
 
 class _AppLocalizationsDelegate
@@ -1702,9 +1786,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

@@ -282,5 +282,29 @@
   "shortBreakSlider": "ಚಿಕ್ಕ ವಿರಾಮ",
   "longBreakSlider": "ದೀರ್ಘ ವಿರಾಮ",
   "sessionsSlider": "ಸೆಷನ್‌ಗಳು",
-  "aboutAndLegalInfo": "ಅಪ್ಲಿಕೇಶನ್ ಕುರಿತು ಮಾಹಿತಿಯನ್ನು ಒಳಗೊಂಡಿದೆ, ಇದರಲ್ಲಿ ಆವೃತ್ತಿ ವಿವರಗಳು, ನಿಬಂಧನೆಗಳು ಮತ್ತು ಗೌಪ್ಯತಾ ನಿತಿಯು ಸೇರಿವೆ."
+  "update": "ನವೀಕರಿಸಿ",
+  "aboutAndLegalInfo": "ಅಪ್ಲಿಕೇಶನ್ ಕುರಿತು ಮಾಹಿತಿಯನ್ನು ಒಳಗೊಂಡಿದೆ, ಇದರಲ್ಲಿ ಆವೃತ್ತಿ ವಿವರಗಳು, ನಿಬಂಧನೆಗಳು ಮತ್ತು ಗೌಪ್ಯತಾ ನಿತಿಯು ಸೇರಿವೆ.",
+  "timerPreset": "ಟೈಮರ್ ಪ್ರಿಸೆಟ್",
+  "timerPresetInfo": "ನಿಮ್ಮ ನೆಚ್ಚಿನ ಟೈಮರ್ ಸಂರಚನೆಗಳನ್ನು ಉಳಿಸಿ ಮತ್ತು ತ್ವರಿತವಾಗಿ ಲೋಡ್ ಮಾಡಿ.",
+  "addPreset": "ಪ್ರಿಸೆಟ್ ಸೇರಿಸಿ",
+  "editPreset": "ಪ್ರಿಸೆಟ್ ಸಂಪಾದಿಸಿ",
+  "presetName": "ಪ್ರಿಸೆಟ್ ಹೆಸರು",
+  "presetNameCannotBeEmpty": "ಪ್ರಿಸೆಟ್ ಹೆಸರು ಖಾಲಿಯಾಗಿರಬಾರದು.",
+  "presetUpdated": "ಪ್ರಿಸೆಟ್ ನವೀಕರಿಸಲಾಗಿದೆ.",
+  "presetSaved": "ಪ್ರಿಸೆಟ್ ಉಳಿಸಲಾಗಿದೆ.",
+  "deletePresetTitle": "ಪ್ರಿಸೆಟ್ ಅಳಿಸುವುದೇ?",
+  "deletePresetConfirmation": "'{presetName}' ಪ್ರಿಸೆಟ್ ಅನ್ನು ಅಳಿಸಲು ನಿಮಗೆ ಖಚಿತವೇ? ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗುವುದಿಲ್ಲ.",
+  "@deletePresetConfirmation": {
+    "placeholders": {
+      "presetName": {}
+    }
+  },
+  "presetApplied": "'{presetName}' ಪ್ರಿಸೆಟ್ ಅನ್ವಯಿಸಲಾಗಿದೆ.",
+  "@presetApplied": {
+    "placeholders": {
+      "presetName": {}
+    }
+  },
+  "presetDeleted": "ಪ್ರಿಸೆಟ್ ಅಳಿಸಲಾಗಿದೆ.",
+  "noPresetsAvailable": "ಯಾವುದೇ ಪ್ರಿಸೆಟ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ. ಒಂದನ್ನು ಸೇರಿಸಿ!"
 }

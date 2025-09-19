@@ -1,16 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pomozen/services/timer_preset.dart';
 import 'package:pomozen/ui/screens/statistics_screen.dart';
 
 class SettingsService extends GetxService {
   // Hive Box Names
   static const String _settingsBoxName = 'pomodoroSettings';
   static const String _sessionsBoxName = 'sessions';
+  static const String _presetsBoxName = 'timerPresets'; // New box for presets
   late Box _settingsBox;
   late Box<SessionData> _sessionsBox;
+  late Box<TimerPreset> _presetsBox; // New box instance
 
   Box<SessionData> get sessionsBox => _sessionsBox;
+  Box<TimerPreset> get presetsBox => _presetsBox; // Getter for presets box
 
   // Keys for Settings
   static const String _focusDurationKey = 'focusDuration';
@@ -48,6 +54,9 @@ class SettingsService extends GetxService {
   static const String _selectedTertiaryColorNameKey =
       'selectedTertiaryColorName';
 
+  // New key for selected timer preset
+  static const String _selectedTimerPresetNameKey = 'selectedTimerPresetName';
+
   // Reactive Properties for Settings
   final focusDuration = 25.obs;
   final shortBreakDuration = 5.obs;
@@ -80,178 +89,182 @@ class SettingsService extends GetxService {
   final selectedSecondaryColorName = 'Yellow'.obs;
   final selectedTertiaryColorName = 'Green'.obs;
 
+  // New reactive properties for Timer Presets
+  final timerPresets = <TimerPreset>[].obs;
+  final selectedTimerPresetName = Rxn<String>();
+
   // Initialization
   Future<void> init() async {
     _settingsBox = await Hive.openBox(_settingsBoxName);
     _sessionsBox = await Hive.openBox<SessionData>(_sessionsBoxName);
+    _presetsBox = await Hive.openBox<TimerPreset>(_presetsBoxName);
     await _loadSettings();
+    _loadPresets();
     print('SettingsService initialized successfully');
+  }
+
+  void _loadPresets() {
+    if (_presetsBox.isEmpty) {
+      _createDefaultPresets();
+    }
+    timerPresets.assignAll(_presetsBox.values.toList());
+    selectedTimerPresetName.value =
+        _settingsBox.get(_selectedTimerPresetNameKey);
+  }
+
+  void _createDefaultPresets() {
+    final defaultPresets = [
+      TimerPreset(
+          name: 'Pomodoro',
+          focusDuration: 25,
+          shortBreakDuration: 5,
+          longBreakDuration: 20,
+          totalSessions: 4),
+      TimerPreset(
+          name: 'Lazy day',
+          focusDuration: 30,
+          shortBreakDuration: 3,
+          longBreakDuration: 5,
+          totalSessions: 3),
+      TimerPreset(
+          name: 'Tired day',
+          focusDuration: 15,
+          shortBreakDuration: 7,
+          longBreakDuration: 20,
+          totalSessions: 7),
+    ];
+    for (var preset in defaultPresets) {
+      _presetsBox.add(preset);
+    }
   }
 
   // Load Settings from Hive
   Future<void> _loadSettings() async {
     focusDuration.value = _settingsBox.get(_focusDurationKey, defaultValue: 25);
-    print('Loaded focusDuration: ${focusDuration.value}');
     shortBreakDuration.value =
         _settingsBox.get(_shortBreakDurationKey, defaultValue: 5);
-    print('Loaded shortBreakDuration: ${shortBreakDuration.value}');
     longBreakDuration.value =
         _settingsBox.get(_longBreakDurationKey, defaultValue: 20);
-    print('Loaded longBreakDuration: ${longBreakDuration.value}');
     totalSessions.value = _settingsBox.get(_totalSessionsKey, defaultValue: 4);
-    print('Loaded totalSessions: ${totalSessions.value}');
     reminder.value = _settingsBox.get(_reminderKey, defaultValue: true);
-    print('Loaded reminder: ${reminder.value}');
     isAlarm.value = _settingsBox.get(_isAlarmKey, defaultValue: false);
-    print('Loaded isAlarm: ${isAlarm.value}');
     autoPlay.value = _settingsBox.get(_autoPlayKey, defaultValue: false);
-    print('Loaded autoPlay: ${autoPlay.value}');
     torchAlerts.value = _settingsBox.get(_torchAlertsKey, defaultValue: false);
-    print('Loaded torchAlerts: ${torchAlerts.value}');
     keepScreenOn.value = _settingsBox.get(_keepScreenOnKey, defaultValue: true);
-    print('Loaded keepScreenOn: ${keepScreenOn.value}');
     dndToggle.value = _settingsBox.get(_dndToggleKey, defaultValue: false);
-    print('Loaded dndToggle: ${dndToggle.value}');
     language.value = _settingsBox.get(_languageKey, defaultValue: 'en');
-    print('Loaded language: ${language.value}');
 
     final List<dynamic> loadedLabels =
-        _settingsBox.get(_labelsKey, defaultValue: []);
+    _settingsBox.get(_labelsKey, defaultValue: []);
     labels.value =
         loadedLabels.map((e) => Map<String, dynamic>.from(e)).toList();
-    print('Loaded active labels: ${labels.value}');
 
     dailyReminderTimeHour.value =
         _settingsBox.get(_dailyReminderTimeHourKey, defaultValue: null);
-    print('Loaded dailyReminderTimeHour: ${dailyReminderTimeHour.value}');
     dailyReminderTimeMinute.value =
         _settingsBox.get(_dailyReminderTimeMinuteKey, defaultValue: null);
-    print('Loaded dailyReminderTimeMinute: ${dailyReminderTimeMinute.value}');
 
     startOfDay.value = _settingsBox.get(_startOfDayKey, defaultValue: 0);
-    print('Loaded startOfDay: ${startOfDay.value}');
     startOfWeek.value = _settingsBox.get(_startOfWeekKey, defaultValue: 1);
-    print('Loaded startOfWeek: ${startOfWeek.value}');
 
     final String? themeModeString = _settingsBox.get(_themeModeKey);
     if (themeModeString != null) {
       themeMode.value = ThemeMode.values.firstWhere(
-        (e) => e.toString() == themeModeString,
+            (e) => e.toString() == themeModeString,
         orElse: () => ThemeMode.system,
       );
     } else {
       themeMode.value = ThemeMode.system;
     }
-    print('Loaded themeMode: ${themeMode.value}');
 
     final Map<dynamic, dynamic>? loadedSelectedStatsLabel =
-        _settingsBox.get(_selectedStatsLabelKey);
+    _settingsBox.get(_selectedStatsLabelKey);
     selectedStatsLabel.value = loadedSelectedStatsLabel != null
         ? Map<String, dynamic>.from(loadedSelectedStatsLabel)
         : null;
-    print('Loaded selectedStatsLabel: ${selectedStatsLabel.value}');
 
     notificationPermissionAsked.value =
         _settingsBox.get(_notificationPermissionAskedKey, defaultValue: false);
-    print(
-        'Loaded notificationPermissionAsked: ${notificationPermissionAsked.value}');
 
     selectedPrimaryColorName.value =
         _settingsBox.get(_selectedPrimaryColorNameKey, defaultValue: 'Blue');
-    print('Loaded selectedPrimaryColorName: ${selectedPrimaryColorName.value}');
-    selectedSecondaryColorName.value = _settingsBox
-        .get(_selectedSecondaryColorNameKey, defaultValue: 'Yellow');
-    print(
-        'Loaded selectedSecondaryColorName: ${selectedSecondaryColorName.value}');
+    selectedSecondaryColorName.value =
+        _settingsBox.get(_selectedSecondaryColorNameKey, defaultValue: 'Yellow');
     selectedTertiaryColorName.value =
         _settingsBox.get(_selectedTertiaryColorNameKey, defaultValue: 'Green');
-    print(
-        'Loaded selectedTertiaryColorName: ${selectedTertiaryColorName.value}');
 
     // NEW: Load Water Reminder Settings
     waterReminderEnabled.value =
         _settingsBox.get(_waterReminderEnabledKey, defaultValue: false);
-    print('Loaded waterReminderEnabled: ${waterReminderEnabled.value}');
     waterReminderIntervalMinutes.value =
         _settingsBox.get(_waterReminderIntervalMinutesKey, defaultValue: 30);
-    print(
-        'Loaded waterReminderIntervalMinutes: ${waterReminderIntervalMinutes.value}');
     waterReminderType.value =
         _settingsBox.get(_waterReminderTypeKey, defaultValue: 'notification');
-    print('Loaded waterReminderType: ${waterReminderType.value}');
   }
 
   // Setting Methods
   Future<void> setFocusDuration(int value) async {
     focusDuration.value = value;
     await _settingsBox.put(_focusDurationKey, value);
-    print('Set focusDuration to: $value (persisted)');
+    _unselectPresetIfModified();
   }
 
   Future<void> setShortBreakDuration(int value) async {
     shortBreakDuration.value = value;
     await _settingsBox.put(_shortBreakDurationKey, value);
-    print('Set shortBreakDuration to: $value (persisted)');
+    _unselectPresetIfModified();
   }
 
   Future<void> setLongBreakDuration(int value) async {
     longBreakDuration.value = value;
     await _settingsBox.put(_longBreakDurationKey, value);
-    print('Set longBreakDuration to: $value (persisted)');
+    _unselectPresetIfModified();
   }
 
   Future<void> setTotalSessions(int value) async {
     totalSessions.value = value;
     await _settingsBox.put(_totalSessionsKey, value);
-    print('Set totalSessions to: $value (persisted)');
+    _unselectPresetIfModified();
   }
 
   Future<void> setReminder(bool value) async {
     reminder.value = value;
     await _settingsBox.put(_reminderKey, value);
-    print('Set reminder to: $value (persisted)');
   }
 
   Future<void> setIsAlarm(bool value) async {
     isAlarm.value = value;
     await _settingsBox.put(_isAlarmKey, value);
-    print('Set isAlarm to: $value (persisted)');
   }
 
   Future<void> setAutoPlay(bool value) async {
     autoPlay.value = value;
     await _settingsBox.put(_autoPlayKey, value);
-    print('Set autoPlay to: $value (persisted)');
   }
 
   Future<void> setTorchAlerts(bool value) async {
     torchAlerts.value = value;
     await _settingsBox.put(_torchAlertsKey, value);
-    print('Set torchAlerts to: $value (persisted)');
   }
 
   Future<void> setKeepScreenOn(bool value) async {
     keepScreenOn.value = value;
     await _settingsBox.put(_keepScreenOnKey, value);
-    print('Set keepScreenOn to: $value (persisted)');
   }
 
   Future<void> setDndToggle(bool value) async {
     dndToggle.value = value;
     await _settingsBox.put(_dndToggleKey, value);
-    print('Set dndToggle to: $value (persisted)');
   }
 
   Future<void> setLanguage(String value) async {
     language.value = value;
     await _settingsBox.put(_languageKey, value);
-    print('Set language to: $value (persisted)');
   }
 
   Future<void> setLabels(List<Map<String, dynamic>> value) async {
     labels.value = value;
     await _settingsBox.put(_labelsKey, value);
-    print('Set labels to: $value (persisted)');
   }
 
   Future<void> setDailyReminderTime(TimeOfDay? value) async {
@@ -260,85 +273,154 @@ class SettingsService extends GetxService {
     if (value != null) {
       await _settingsBox.put(_dailyReminderTimeHourKey, value.hour);
       await _settingsBox.put(_dailyReminderTimeMinuteKey, value.minute);
-      print('Set dailyReminderTime to: $value (persisted)');
     } else {
       await _settingsBox.delete(_dailyReminderTimeHourKey);
       await _settingsBox.delete(_dailyReminderTimeMinuteKey);
-      print('Cleared dailyReminderTime (persisted)');
     }
   }
 
   Future<void> setStartOfDay(int value) async {
     startOfDay.value = value;
     await _settingsBox.put(_startOfDayKey, value);
-    print('Set startOfDay to: $value (persisted)');
   }
 
   Future<void> setStartOfWeek(int value) async {
     startOfWeek.value = value;
     await _settingsBox.put(_startOfWeekKey, value);
-    print('Set startOfWeek to: $value (persisted)');
   }
 
   Future<void> setThemeMode(ThemeMode value) async {
     themeMode.value = value;
     await _settingsBox.put(_themeModeKey, value.toString());
     Get.changeThemeMode(value);
-    print('Set themeMode to: $value (persisted)');
   }
 
   Future<void> setSelectedStatsLabel(Map<String, dynamic>? value) async {
     selectedStatsLabel.value = value;
     await _settingsBox.put(_selectedStatsLabelKey, value);
-    print('Set selectedStatsLabel to: $value (persisted)');
   }
 
   Future<void> setNotificationPermissionAsked(bool value) async {
     notificationPermissionAsked.value = value;
     await _settingsBox.put(_notificationPermissionAskedKey, value);
-    print('Set notificationPermissionAsked: $value (persisted)');
   }
 
   // NEW: Water Reminder Setting Methods
   Future<void> setWaterReminderEnabled(bool value) async {
     waterReminderEnabled.value = value;
     await _settingsBox.put(_waterReminderEnabledKey, value);
-    print('Set waterReminderEnabled to: $value (persisted)');
   }
 
   Future<void> setWaterReminderIntervalMinutes(int value) async {
     waterReminderIntervalMinutes.value = value;
     await _settingsBox.put(_waterReminderIntervalMinutesKey, value);
-    print('Set waterReminderIntervalMinutes to: $value (persisted)');
   }
 
   Future<void> setWaterReminderType(String value) async {
     waterReminderType.value = value;
     await _settingsBox.put(_waterReminderTypeKey, value);
-    print('Set waterReminderType to: $value (persisted)');
   }
 
   // Theme Color Setting Methods
   Future<void> setSelectedPrimaryColorName(String value) async {
     selectedPrimaryColorName.value = value;
     await _settingsBox.put(_selectedPrimaryColorNameKey, value);
-    print('Set selectedPrimaryColorName to: $value (persisted)');
   }
 
   Future<void> setSelectedSecondaryColorName(String value) async {
     selectedSecondaryColorName.value = value;
     await _settingsBox.put(_selectedSecondaryColorNameKey, value);
-    print('Set selectedSecondaryColorName to: $value (persisted)');
   }
 
   Future<void> setSelectedTertiaryColorName(String value) async {
     selectedTertiaryColorName.value = value;
     await _settingsBox.put(_selectedTertiaryColorNameKey, value);
-    print('Set selectedTertiaryColorName to: $value (persisted)');
+  }
+
+  // Timer Preset Methods
+  Future<void> addTimerPreset(TimerPreset preset) async {
+    await _presetsBox.add(preset);
+    _loadPresets();
+  }
+
+  Future<void> updateTimerPreset(dynamic key, TimerPreset preset) async {
+    await _presetsBox.put(key, preset);
+    if (selectedTimerPresetName.value == preset.name) {
+      selectTimerPreset(preset.name); // Re-apply settings if selected preset is updated
+    }
+    _loadPresets();
+  }
+
+  Future<void> deleteTimerPreset(dynamic key) async {
+    final preset = _presetsBox.get(key);
+    if (preset?.name == selectedTimerPresetName.value) {
+      await setSelectedTimerPresetName(null);
+    }
+    await _presetsBox.delete(key);
+    _loadPresets();
+  }
+
+  Future<void> selectTimerPreset(String? presetName) async {
+    if (presetName == null) {
+      await setSelectedTimerPresetName(null);
+      return;
+    }
+
+    final preset =
+    timerPresets.firstWhereOrNull((p) => p.name == presetName);
+    if (preset != null) {
+      await setFocusDuration(preset.focusDuration);
+      await setShortBreakDuration(preset.shortBreakDuration);
+      await setLongBreakDuration(preset.longBreakDuration);
+      await setTotalSessions(preset.totalSessions);
+      await setSelectedTimerPresetName(preset.name);
+    }
+  }
+
+  Future<void> setSelectedTimerPresetName(String? name) async {
+    selectedTimerPresetName.value = name;
+    if (name != null) {
+      await _settingsBox.put(_selectedTimerPresetNameKey, name);
+    } else {
+      await _settingsBox.delete(_selectedTimerPresetNameKey);
+    }
+  }
+
+  void _unselectPresetIfModified() {
+    if (selectedTimerPresetName.value == null) return;
+    final preset = timerPresets
+        .firstWhereOrNull((p) => p.name == selectedTimerPresetName.value);
+    if (preset != null) {
+      if (preset.focusDuration != focusDuration.value ||
+          preset.shortBreakDuration != shortBreakDuration.value ||
+          preset.longBreakDuration != longBreakDuration.value ||
+          preset.totalSessions != totalSessions.value) {
+        setSelectedTimerPresetName(null);
+      }
+    } else {
+      setSelectedTimerPresetName(null);
+    }
+  }
+
+  List<Map<String, dynamic>> getPresetsAsMaps() {
+    return _presetsBox.values.map((p) => p.toMap()).toList();
+  }
+
+  Future<void> setPresetsFromMaps(List<Map<String, dynamic>> presetMaps) async {
+    await _presetsBox.clear();
+    for (var map in presetMaps) {
+      await _presetsBox.add(TimerPreset.fromMap(map));
+    }
+    _loadPresets();
   }
 
   // Utility Methods
   Future<void> resetToDefaults() async {
+    await _presetsBox.clear();
+    _createDefaultPresets();
+    _loadPresets();
+    await setSelectedTimerPresetName(null);
+
     await setFocusDuration(25);
     await setShortBreakDuration(5);
     await setLongBreakDuration(20);
@@ -350,8 +432,6 @@ class SettingsService extends GetxService {
     await setKeepScreenOn(true);
     await setDndToggle(false);
     await setLanguage('en');
-    // The line 'await setLabels([]);' was intentionally removed from here
-    // as per previous discussion, to preserve labels when only settings are reset.
     await setDailyReminderTime(null);
     await setStartOfDay(0);
     await setStartOfWeek(1);
@@ -361,7 +441,6 @@ class SettingsService extends GetxService {
     await setSelectedPrimaryColorName('Blue');
     await setSelectedSecondaryColorName('Yellow');
     await setSelectedTertiaryColorName('Green');
-    // NEW: Reset Water Reminder settings
     await setWaterReminderEnabled(false);
     await setWaterReminderIntervalMinutes(30);
     await setWaterReminderType('notification');
@@ -371,8 +450,10 @@ class SettingsService extends GetxService {
   Future<void> clearAllData() async {
     await _settingsBox.clear();
     await _sessionsBox.clear();
-    // Explicitly clear labels after clearing the settings box
+    await _presetsBox.clear();
     await setLabels([]);
-    print('All data (settings and sessions) cleared');
+    print('All data (settings, sessions, presets) cleared');
+    _loadPresets();
+    await _loadSettings();
   }
 }

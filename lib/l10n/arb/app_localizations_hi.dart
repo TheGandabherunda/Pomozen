@@ -849,6 +849,53 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sessionsSlider => 'सत्र';
 
   @override
+  String get update => 'अद्यतन';
+
+  @override
   String get aboutAndLegalInfo =>
       'एप्लिकेशन से संबंधित जानकारी, जिसमें संस्करण विवरण, नियम और शर्तें, तथा गोपनीयता नीति शामिल हैं।';
+
+  @override
+  String get timerPreset => 'टाइमर प्रीसेट';
+
+  @override
+  String get timerPresetInfo =>
+      'अपने पसंदीदा टाइमर कॉन्फ़िगरेशन को सहेजें और जल्दी से लोड करें।';
+
+  @override
+  String get addPreset => 'प्रीसेट जोड़ें';
+
+  @override
+  String get editPreset => 'प्रीसेट संपादित करें';
+
+  @override
+  String get presetName => 'प्रीसेट नाम';
+
+  @override
+  String get presetNameCannotBeEmpty => 'प्रीसेट नाम खाली नहीं हो सकता।';
+
+  @override
+  String get presetUpdated => 'प्रीसेट अपडेट किया गया।';
+
+  @override
+  String get presetSaved => 'प्रीसेट सहेजा गया।';
+
+  @override
+  String get deletePresetTitle => 'प्रीसेट हटाएं?';
+
+  @override
+  String deletePresetConfirmation(Object presetName) {
+    return 'क्या आप वाकई \'$presetName\' प्रीसेट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।';
+  }
+
+  @override
+  String presetApplied(Object presetName) {
+    return '\'$presetName\' प्रीसेट लागू किया गया।';
+  }
+
+  @override
+  String get presetDeleted => 'प्रीसेट हटा दिया गया।';
+
+  @override
+  String get noPresetsAvailable => 'कोई प्रीसेट उपलब्ध नहीं है। एक जोड़ें!';
 }
