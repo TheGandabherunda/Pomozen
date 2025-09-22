@@ -1,10 +1,10 @@
 name: pomozen
 description: A Pomodoro timer app with Minimal Design, offline support, and customizable settings.
-version: 1.2.0+9
+version: 1.2.1+10
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
-  flutter: ^3.35.3
+  flutter: ^3.32.4
 
 dependencies:
   # Flutter core and localization
@@ -34,7 +34,7 @@ dependencies:
   device_info_plus: ^12.1.0 # Device information
 
   # UI and Widgets
-  fl_chart: ^1.1.1 # For charts
+  fl_chart: ^1.1.0 # For charts
   fluttertoast: ^8.2.8 # Toast messages
   flutter_heatmap_calendar: ^1.0.5 # Heatmap calendar widget
   pie_chart_sz: ^1.1.1 # Pie chart widget
@@ -84,3 +84,6 @@ flutter:
           weight: 600
         - asset: assets/fonts/OpenRunde-Bold.otf
           weight: 700
+
+dependency_overrides:
+  vector_math: ^2.2.0
