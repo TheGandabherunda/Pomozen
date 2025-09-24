@@ -88,6 +88,7 @@ androidComponents {
             val abiCode = abiCodes[abi]
             if (abiCode != null) {
                 output.versionCode.set(baseVersionCode * 10 + 3000 + abiCode)
+
             } else {
                 output.versionCode.set(flutter.versionCode)
             }
