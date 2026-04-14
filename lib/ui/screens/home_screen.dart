@@ -54,13 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
     final appColors = AppTheme.colorsOf(context);
     final localizations = AppLocalizations.of(context)!;
 
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Stack(
       children: [
         Scaffold(
           backgroundColor: appColors.grey7,
           body: _widgetOptions.elementAt(_selectedIndex),
           bottomNavigationBar: SizedBox(
-            height: 88,
+            height: isLandscape ? 56 : 88,
             child: BottomAppBar(
               color: appColors.grey7,
               elevation: 0,

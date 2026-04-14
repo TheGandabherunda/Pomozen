@@ -272,200 +272,248 @@ class _PomodoroScreenState extends State<PomodoroScreen>
               child: child,
             );
           },
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Obx(() => _buildCupertinoLabelPicker(
-                    context, appColors, localizations)),
-                const SizedBox(height: 80),
-                AnimatedBuilder(
-                  animation: _timerScaleAnimation,
-                  builder: (context, child) {
-                    return Transform.scale(
-                      scale: _timerScaleAnimation.value,
-                      child: child,
-                    );
-                  },
-                  child: SizedBox(
-                    width: 280,
-                    height: 280,
-                    child: Center(
-                      child: Obx(() {
-                        final appColors = AppTheme.colorsOf(context);
-                        Color progressColor;
-                        Color backgroundColor;
-
-                        Color activeSessionColor;
-                        switch (controller.currentMode.value) {
-                          case PomodoroMode.focus:
-                            activeSessionColor = appColors.primary;
-                            break;
-                          case PomodoroMode.shortBreak:
-                            activeSessionColor = appColors.secondary;
-                            break;
-                          case PomodoroMode.longBreak:
-                            activeSessionColor = appColors.tertiary;
-                            break;
-                        }
-
-                        switch (controller.currentMode.value) {
-                          case PomodoroMode.focus:
-                            progressColor = appColors.primary;
-                            backgroundColor =
-                                appColors.primary.withOpacity(0.2);
-                            break;
-                          case PomodoroMode.shortBreak:
-                            progressColor = appColors.secondary;
-                            backgroundColor =
-                                appColors.secondary.withOpacity(0.2);
-                            break;
-                          case PomodoroMode.longBreak:
-                            progressColor = appColors.tertiary;
-                            backgroundColor =
-                                appColors.tertiary.withOpacity(0.2);
-                            break;
-                        }
-
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Replaced custom CircularProgress with CircularProgressIndicator
-                            SizedBox(
-                              width: 260,
-                              height: 260,
-                              child: CircularProgressIndicator(
-                                value: controller.progress.value,
-                                year2023: false,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    progressColor),
-                                backgroundColor: backgroundColor,
-                                strokeWidth: 16,
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  _formatTime(controller.currentTime.value),
-                                  style: TextStyle(
-                                    fontFamily: 'OpenRunde',
-                                    fontSize: 64,
-                                    fontWeight: FontWeight.bold,
-                                    color: appColors.grey10,
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: activeSessionColor.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(40),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 12),
-                                  child: Text(
-                                    _getModeText(controller.currentMode.value,
-                                        localizations),
-                                    style: TextStyle(
-                                      fontFamily: 'OpenRunde',
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w600,
-                                      color: appColors.grey10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
+          child: OrientationBuilder(
+            builder: (context, orientation) {
+              if (orientation == Orientation.portrait) {
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Obx(() => _buildCupertinoLabelPicker(
+                          context, appColors, localizations)),
+                      const SizedBox(height: 80),
+                      _buildTimer(context, 280),
+                      const SizedBox(height: 24),
+                      _buildControls(context, appColors, localizations),
+                      _buildSessionProgress(context, appColors, localizations),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 24),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 24.0, horizontal: 16.0),
-                  child: Obx(() => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Opacity(
-                            opacity: controller.isRunning.value ? 0.5 : 1.0,
-                            child: AbsorbPointer(
-                              absorbing: controller.isRunning.value,
-                              child: _buildActionButton(
-                                icon: Icons.refresh,
-                                onPressed: controller.resetTimer,
-                                appColors: appColors,
-                                animationController:
-                                    _resetButtonAnimationController,
-                                heroTag:
-                                    'refresh_button_${Icons.refresh.codePoint}',
-                              ),
-                            ),
+                );
+              } else {
+                return SingleChildScrollView(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Obx(() => _buildCupertinoLabelPicker(
+                                  context, appColors, localizations)),
+                              _buildTimer(context, 180),
+                            ],
                           ),
-                          _buildPlayPauseButton(
-                            isRunning: controller.isRunning.value,
-                            onPlay: controller.startTimer,
-                            onPause: controller.pauseTimer,
-                            appColors: appColors,
-                            localizations: localizations,
-                            animationController:
-                                _playPauseButtonAnimationController,
-                            scaleAnimation: _playPauseButtonScaleAnimation,
-                          ),
-                          _buildActionButton(
-                            icon: Icons.skip_next,
-                            onPressed: controller.skipToNextMode,
-                            appColors: appColors,
-                            animationController: _skipButtonAnimationController,
-                            heroTag: 'skip_button_${Icons.skip_next.codePoint}',
-                          ),
-                        ],
-                      )),
-                ),
-                const SizedBox(height: 8),
-                Obx(() {
-                  Color activeSessionColor;
-                  switch (controller.currentMode.value) {
-                    case PomodoroMode.focus:
-                      activeSessionColor = appColors.primary;
-                      break;
-                    case PomodoroMode.shortBreak:
-                      activeSessionColor = appColors.secondary;
-                      break;
-                    case PomodoroMode.longBreak:
-                      activeSessionColor = appColors.tertiary;
-                      break;
-                  }
-                  return _buildSessionBarGraph(
-                    controller.totalSessions.value,
-                    controller.currentSession.value,
-                    controller.isRunning.value,
-                    appColors,
-                    controller.progress.value,
-                    activeSessionColor,
-                  );
-                }),
-                const SizedBox(height: 8),
-                Obx(() => Text(
-                      localizations.sessionOfSessions(
-                        controller.currentSession.value,
-                        controller.totalSessions.value,
+                        ),
                       ),
-                      style: TextStyle(
-                        fontFamily: 'OpenRunde',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: appColors.grey3,
+                      const SizedBox(width: 24),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildControls(context, appColors, localizations),
+                            _buildSessionProgress(
+                                context, appColors, localizations),
+                          ],
+                        ),
                       ),
-                    )),
-              ],
-            ),
+                    ],
+                  ),
+                );
+              }
+            },
           ),
         ),
       ),
     );
   }
+
+  Widget _buildTimer(BuildContext context, double size) {
+    return AnimatedBuilder(
+      animation: _timerScaleAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _timerScaleAnimation.value,
+          child: child,
+        );
+      },
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Center(
+          child: Obx(() {
+            final appColors = AppTheme.colorsOf(context);
+            final localizations = AppLocalizations.of(context);
+            Color progressColor;
+            Color backgroundColor;
+
+            Color activeSessionColor;
+            switch (controller.currentMode.value) {
+              case PomodoroMode.focus:
+                activeSessionColor = appColors.primary;
+                break;
+              case PomodoroMode.shortBreak:
+                activeSessionColor = appColors.secondary;
+                break;
+              case PomodoroMode.longBreak:
+                activeSessionColor = appColors.tertiary;
+                break;
+            }
+
+            switch (controller.currentMode.value) {
+              case PomodoroMode.focus:
+                progressColor = appColors.primary;
+                backgroundColor = appColors.primary.withOpacity(0.2);
+                break;
+              case PomodoroMode.shortBreak:
+                progressColor = appColors.secondary;
+                backgroundColor = appColors.secondary.withOpacity(0.2);
+                break;
+              case PomodoroMode.longBreak:
+                progressColor = appColors.tertiary;
+                backgroundColor = appColors.tertiary.withOpacity(0.2);
+                break;
+            }
+
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: size * 0.928,
+                  height: size * 0.928,
+                  child: CircularProgressIndicator(
+                    value: controller.progress.value,
+                    year2023: false,
+                    valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+                    backgroundColor: backgroundColor,
+                    strokeWidth: size * 0.057,
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _formatTime(controller.currentTime.value),
+                      style: TextStyle(
+                        fontFamily: 'OpenRunde',
+                        fontSize: size * 0.228,
+                        fontWeight: FontWeight.bold,
+                        color: appColors.grey10,
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: activeSessionColor.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 12),
+                      child: Text(
+                        _getModeText(
+                            controller.currentMode.value, localizations),
+                        style: TextStyle(
+                          fontFamily: 'OpenRunde',
+                          fontSize: size * 0.085,
+                          fontWeight: FontWeight.w600,
+                          color: appColors.grey10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildControls(BuildContext context, AppThemeColors appColors,
+      AppLocalizations localizations) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+      child: Obx(() => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Opacity(
+                opacity: controller.isRunning.value ? 0.5 : 1.0,
+                child: AbsorbPointer(
+                  absorbing: controller.isRunning.value,
+                  child: _buildActionButton(
+                    icon: Icons.refresh,
+                    onPressed: controller.resetTimer,
+                    appColors: appColors,
+                    animationController: _resetButtonAnimationController,
+                    heroTag: 'refresh_button_${Icons.refresh.codePoint}',
+                  ),
+                ),
+              ),
+              _buildPlayPauseButton(
+                isRunning: controller.isRunning.value,
+                onPlay: controller.startTimer,
+                onPause: controller.pauseTimer,
+                appColors: appColors,
+                localizations: localizations,
+                animationController: _playPauseButtonAnimationController,
+                scaleAnimation: _playPauseButtonScaleAnimation,
+              ),
+              _buildActionButton(
+                icon: Icons.skip_next,
+                onPressed: controller.skipToNextMode,
+                appColors: appColors,
+                animationController: _skipButtonAnimationController,
+                heroTag: 'skip_button_${Icons.skip_next.codePoint}',
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _buildSessionProgress(BuildContext context, AppThemeColors appColors,
+      AppLocalizations localizations) {
+    return Column(
+      children: [
+        const SizedBox(height: 8),
+        Obx(() {
+          Color activeSessionColor;
+          switch (controller.currentMode.value) {
+            case PomodoroMode.focus:
+              activeSessionColor = appColors.primary;
+              break;
+            case PomodoroMode.shortBreak:
+              activeSessionColor = appColors.secondary;
+              break;
+            case PomodoroMode.longBreak:
+              activeSessionColor = appColors.tertiary;
+              break;
+          }
+          return _buildSessionBarGraph(
+            controller.totalSessions.value,
+            controller.currentSession.value,
+            controller.isRunning.value,
+            appColors,
+            controller.progress.value,
+            activeSessionColor,
+          );
+        }),
+        const SizedBox(height: 8),
+        Obx(() => Text(
+              localizations.sessionOfSessions(
+                controller.currentSession.value,
+                controller.totalSessions.value,
+              ),
+              style: TextStyle(
+                fontFamily: 'OpenRunde',
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: appColors.grey3,
+              ),
+            )),
+      ],
+    );
+  }
+
 
   // Dialogs
   Future<void> _showAddLabelDialog(BuildContext context) async {
@@ -920,7 +968,6 @@ class _PomodoroScreenState extends State<PomodoroScreen>
         key: _labelKey,
         width: labelBoxWidth,
         height: labelBoxHeight,
-        margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           color: Colors.transparent,
@@ -1018,15 +1065,16 @@ class _PomodoroScreenState extends State<PomodoroScreen>
                   final Offset offset = renderBox.localToGlobal(Offset.zero);
                   final Size size = renderBox.size;
 
+                  final screenSize = MediaQuery.of(context).size;
                   await showMenu<void>(
                     elevation: 0,
                     color: appColors.grey5,
                     context: context,
                     position: RelativeRect.fromLTRB(
-                      offset.dx + size.width,
-                      offset.dy + size.height - 6,
                       offset.dx,
-                      offset.dy + size.height + 300,
+                      offset.dy + size.height,
+                      screenSize.width - (offset.dx + size.width),
+                      screenSize.height - (offset.dy + size.height),
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),

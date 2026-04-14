@@ -294,6 +294,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   Widget build(BuildContext context) {
     final appColors = AppTheme.colorsOf(context);
     final localizations = AppLocalizations.of(context)!;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
       backgroundColor: appColors.grey7,
@@ -566,35 +568,61 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                               color: appColors.grey10,
                             ),
                             const SizedBox(height: 16),
-                            _buildStatCard(
-                              context,
-                              localizations.totalFocusTime,
-                              '${totalFocusTime} ${localizations.minutes}',
-                              appColors.primary,
-                            ),
-                            _buildStatCard(
-                              context,
-                              localizations.totalSessions,
-                              '$totalSessionsCount',
-                              appColors.secondary,
-                            ),
-                            _buildStatCard(
-                              context,
-                              localizations.successRate,
-                              '${successRate.toStringAsFixed(1)}%',
-                              appColors.tertiary,
-                            ),
-                            _buildStatCard(
-                              context,
-                              localizations.averageFocusTimePerSession,
-                              '${averageFocusTimePerSession.toStringAsFixed(1)} ${localizations.minutes}',
-                              appColors.tertiary,
-                            ),
-                            _buildStatCard(
-                              context,
-                              localizations.skippedSessions,
-                              '$totalSkippedSessions',
-                              appColors.error,
+                            Wrap(
+                              spacing: 16,
+                              runSpacing: 0,
+                              children: [
+                                _buildStatCard(
+                                  context,
+                                  localizations.totalFocusTime,
+                                  '${totalFocusTime} ${localizations.minutes}',
+                                  appColors.primary,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                                _buildStatCard(
+                                  context,
+                                  localizations.totalSessions,
+                                  '$totalSessionsCount',
+                                  appColors.secondary,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                                _buildStatCard(
+                                  context,
+                                  localizations.successRate,
+                                  '${successRate.toStringAsFixed(1)}%',
+                                  appColors.tertiary,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                                _buildStatCard(
+                                  context,
+                                  localizations.averageFocusTimePerSession,
+                                  '${averageFocusTimePerSession.toStringAsFixed(1)} ${localizations.minutes}',
+                                  appColors.tertiary,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                                _buildStatCard(
+                                  context,
+                                  localizations.skippedSessions,
+                                  '$totalSkippedSessions',
+                                  appColors.error,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -622,25 +650,43 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                               color: appColors.grey10,
                             ),
                             const SizedBox(height: 16),
-                            _buildStatCard(
-                              context,
-                              localizations.currentStreak,
-                              '$currentStreak ${localizations.days}',
-                              appColors.aOrange,
-                            ),
-                            _buildStatCard(
-                              context,
-                              localizations.bestFocusDay,
-                              bestFocusDay != null
-                                  ? '${bestFocusDay!.day}/${bestFocusDay!.month}/${bestFocusDay!.year} ($maxFocusMinutesInDay ${localizations.minutes})'
-                                  : localizations.notAvailable,
-                              appColors.aPurple,
-                            ),
-                            _buildStatCard(
-                              context,
-                              localizations.mostFocusedTimeOfDay,
-                              mostFocusedTimeOfDayText,
-                              appColors.aGreen,
+                            Wrap(
+                              spacing: 16,
+                              runSpacing: 0,
+                              children: [
+                                _buildStatCard(
+                                  context,
+                                  localizations.currentStreak,
+                                  '$currentStreak ${localizations.days}',
+                                  appColors.aOrange,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                                _buildStatCard(
+                                  context,
+                                  localizations.bestFocusDay,
+                                  bestFocusDay != null
+                                      ? '${bestFocusDay!.day}/${bestFocusDay!.month}/${bestFocusDay!.year} ($maxFocusMinutesInDay ${localizations.minutes})'
+                                      : localizations.notAvailable,
+                                  appColors.aPurple,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                                _buildStatCard(
+                                  context,
+                                  localizations.mostFocusedTimeOfDay,
+                                  mostFocusedTimeOfDayText,
+                                  appColors.aGreen,
+                                  width: isLandscape
+                                      ? (MediaQuery.of(context).size.width - 80) /
+                                          2
+                                      : null,
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -843,10 +889,11 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   /// Builds a card to display a single statistic.
   Widget _buildStatCard(
-      BuildContext context, String title, String value, Color color) {
+      BuildContext context, String title, String value, Color color,
+      {double? width}) {
     final appColors = AppTheme.colorsOf(context);
     return SizedBox(
-      width: double.infinity,
+      width: width ?? double.infinity,
       child: Card(
         color: appColors.grey7,
         elevation: 0,
@@ -937,8 +984,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
           children: [
             Center(
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.65,
-                height: MediaQuery.of(context).size.width * 0.65,
+                width: MediaQuery.of(context).size.shortestSide * 0.65,
+                height: MediaQuery.of(context).size.shortestSide * 0.65,
                 child: PieChartSz(
                   colors: chartColors,
                   values: chartValues,
@@ -1083,7 +1130,10 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
     final int numberOfLabels = (chartMaxY / intervalSize).round() + 1;
 
-    const double chartHeight = 300.0;
+    final double chartHeight =
+        MediaQuery.of(context).orientation == Orientation.landscape
+            ? 200.0
+            : 300.0;
     const double bottomTitlesReservedSize = 40.0;
 
     const double barWidth = 24.0;
@@ -1414,7 +1464,10 @@ class _StatisticsScreenState extends State<StatisticsScreen>
       intervalSize = 20.0;
     }
 
-    const double chartHeight = 300.0;
+    final double chartHeight =
+        MediaQuery.of(context).orientation == Orientation.landscape
+            ? 200.0
+            : 300.0;
     const double bottomTitlesReservedSize = 40.0;
 
     const double barWidth = 24.0;
@@ -1670,7 +1723,9 @@ class _StatisticsScreenState extends State<StatisticsScreen>
               },
               textColor: appColors.grey1,
               borderRadius: 6,
-              size: 40,
+              size: MediaQuery.of(context).orientation == Orientation.landscape
+                  ? 30
+                  : 40,
               showColorTip: true,
               colorTipHelper: [
                 _buildSettingText('0-1 ${localizations.minutes}  ',
