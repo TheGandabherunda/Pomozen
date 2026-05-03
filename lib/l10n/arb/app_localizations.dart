@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_en.dart';
 import 'app_localizations_hi.dart';
 import 'app_localizations_kn.dart';
+import 'app_localizations_uk.dart';
 
 // ignore_for_file: type=lint
 
@@ -97,7 +98,8 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('hi'),
-    Locale('kn')
+    Locale('kn'),
+    Locale('uk')
   ];
 
   /// No description provided for @pomodoroTimer.
@@ -393,6 +395,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Keep Screen On'**
   String get keepScreenOn;
+
+  /// No description provided for @ambientMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Ambient Mode'**
+  String get ambientMode;
+
+  /// No description provided for @ambientModeInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'A minimal, high-contrast UI that keeps the screen on while the timer is running, perfect for desk use.'**
+  String get ambientModeInfo;
 
   /// No description provided for @soundEffects.
   ///
@@ -1552,7 +1566,7 @@ abstract class AppLocalizations {
   /// **'Enter a time between 5 and 480 minutes'**
   String get invalidInterval;
 
-  /// No description provided for @waterReminderIntervalSet.
+  /// TODO: Needs plural forms for 'minutes'. Current: 'every {minutes} minutes' (many). Should be: 'every {minutes, plural, one{{minutes} minute} other{{minutes} minutes}}'
   ///
   /// In en, this message translates to:
   /// **'You\'ll be reminded every {minutes} minutes'**
@@ -1768,7 +1782,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'hi', 'kn'].contains(locale.languageCode);
+      <String>['en', 'hi', 'kn', 'uk'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1783,6 +1797,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsHi();
     case 'kn':
       return AppLocalizationsKn();
+    case 'uk':
+      return AppLocalizationsUk();
   }
 
   throw FlutterError(

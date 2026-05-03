@@ -750,6 +750,9 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
       case 'hi':
         currentLanguageName = 'हिन्दी';
         break;
+      case 'uk':
+        currentLanguageName = 'Українська';
+        break;
       default:
         currentLanguageName = selectedLanguageCode;
     }
@@ -815,46 +818,50 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.medium, vertical: AppSpacing.small),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                child: Wrap(
+                  spacing: AppSpacing.medium,
+                  runSpacing: AppSpacing.medium,
+                  alignment: WrapAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                      child: _buildSelectionBox(
-                        context: context,
-                        title: 'English',
-                        icon: Icons.language_rounded,
-                        isSelected: selectedLanguageCode == 'en',
-                        onTap: () {
-                          onChanged('en');
-                          Get.back();
-                        },
-                      ),
+                    _buildSelectionBox(
+                      context: context,
+                      title: 'English',
+                      icon: Icons.language_rounded,
+                      isSelected: selectedLanguageCode == 'en',
+                      onTap: () {
+                        onChanged('en');
+                        Get.back();
+                      },
                     ),
-                    const SizedBox(width: AppSpacing.medium),
-                    Expanded(
-                      child: _buildSelectionBox(
-                        context: context,
-                        title: 'ಕನ್ನಡ',
-                        icon: Icons.language_rounded,
-                        isSelected: selectedLanguageCode == 'kn',
-                        onTap: () {
-                          onChanged('kn');
-                          Get.back();
-                        },
-                      ),
+                    _buildSelectionBox(
+                      context: context,
+                      title: 'ಕನ್ನಡ',
+                      icon: Icons.language_rounded,
+                      isSelected: selectedLanguageCode == 'kn',
+                      onTap: () {
+                        onChanged('kn');
+                        Get.back();
+                      },
                     ),
-                    const SizedBox(width: AppSpacing.medium),
-                    Expanded(
-                      child: _buildSelectionBox(
-                        context: context,
-                        title: 'हिन्दी',
-                        icon: Icons.language_rounded,
-                        isSelected: selectedLanguageCode == 'hi',
-                        onTap: () {
-                          onChanged('hi');
-                          Get.back();
-                        },
-                      ),
+                    _buildSelectionBox(
+                      context: context,
+                      title: 'हिन्दी',
+                      icon: Icons.language_rounded,
+                      isSelected: selectedLanguageCode == 'hi',
+                      onTap: () {
+                        onChanged('hi');
+                        Get.back();
+                      },
+                    ),
+                    _buildSelectionBox(
+                      context: context,
+                      title: 'Українська',
+                      icon: Icons.language_rounded,
+                      isSelected: selectedLanguageCode == 'uk',
+                      onTap: () {
+                        onChanged('uk');
+                        Get.back();
+                      },
                     ),
                   ],
                 ),
@@ -2200,6 +2207,14 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                         } else {
                           WakelockPlus.disable();
                         }
+                      },
+                    )),
+                    Obx(() => _buildSwitchSetting(
+                      context: context,
+                      title: localizations.ambientMode ?? 'Ambient Mode',
+                      value: controller.settingsService.ambientMode.value,
+                      onChanged: (value) {
+                        controller.settingsService.setAmbientMode(value);
                       },
                     )),
                     Obx(() => _buildSwitchSetting(

@@ -28,6 +28,7 @@ class SettingsService extends GetxService {
   static const String _autoPlayKey = 'autoPlay';
   static const String _torchAlertsKey = 'torchAlerts';
   static const String _keepScreenOnKey = 'keepScreenOn';
+  static const String _ambientModeKey = 'ambientMode';
   static const String _dndToggleKey = 'dndToggle';
   static const String _languageKey = 'language';
   static const String _labelsKey = 'labels';
@@ -67,6 +68,7 @@ class SettingsService extends GetxService {
   final autoPlay = false.obs;
   final torchAlerts = false.obs;
   final keepScreenOn = true.obs;
+  final ambientMode = false.obs;
   final dndToggle = false.obs;
   final language = 'en'.obs;
   final labels = <Map<String, dynamic>>[].obs;
@@ -151,6 +153,7 @@ class SettingsService extends GetxService {
     autoPlay.value = _settingsBox.get(_autoPlayKey, defaultValue: false);
     torchAlerts.value = _settingsBox.get(_torchAlertsKey, defaultValue: false);
     keepScreenOn.value = _settingsBox.get(_keepScreenOnKey, defaultValue: true);
+    ambientMode.value = _settingsBox.get(_ambientModeKey, defaultValue: false);
     dndToggle.value = _settingsBox.get(_dndToggleKey, defaultValue: false);
     language.value = _settingsBox.get(_languageKey, defaultValue: 'en');
 
@@ -250,6 +253,11 @@ class SettingsService extends GetxService {
   Future<void> setKeepScreenOn(bool value) async {
     keepScreenOn.value = value;
     await _settingsBox.put(_keepScreenOnKey, value);
+  }
+
+  Future<void> setAmbientMode(bool value) async {
+    ambientMode.value = value;
+    await _settingsBox.put(_ambientModeKey, value);
   }
 
   Future<void> setDndToggle(bool value) async {
@@ -430,6 +438,7 @@ class SettingsService extends GetxService {
     await setAutoPlay(false);
     await setTorchAlerts(false);
     await setKeepScreenOn(true);
+    await setAmbientMode(false);
     await setDndToggle(false);
     await setLanguage('en');
     await setDailyReminderTime(null);

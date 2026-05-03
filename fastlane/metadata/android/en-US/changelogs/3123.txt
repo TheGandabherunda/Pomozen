@@ -1,0 +1,5 @@
+v1.2.3
+• Introduced Ambient Mode for an immersive timer experience.
+• Added Ukrainian language support.
+• Fixed UI layout issues in landscape mode.
+• Enhanced language selection interface.

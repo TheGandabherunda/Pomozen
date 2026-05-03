@@ -61,6 +61,8 @@
   "failedToPickFile": "फ़ाइल चुनने में विफल।",
   "general": "सामान्य",
   "keepScreenOn": "स्क्रीन चालू रखें",
+  "ambientMode": "एम्बिएंट मोड",
+  "ambientModeInfo": "एक न्यूनतम, उच्च-विपरीत (high-contrast) UI जो टाइमर चलने के दौरान स्क्रीन को चालू रखता है, डेस्क उपयोग के लिए एकदम सही है।",
   "soundEffects": "ध्वनि प्रभाव",
   "vibration": "कंपन",
   "dndToggle": "परेशान न करें",

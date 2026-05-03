@@ -174,6 +174,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get keepScreenOn => 'स्क्रीन चालू रखें';
 
   @override
+  String get ambientMode => 'एम्बिएंट मोड';
+
+  @override
+  String get ambientModeInfo =>
+      'एक न्यूनतम, उच्च-विपरीत (high-contrast) UI जो टाइमर चलने के दौरान स्क्रीन को चालू रखता है, डेस्क उपयोग के लिए एकदम सही है।';
+
+  @override
   String get soundEffects => 'ध्वनि प्रभाव';
 
   @override

@@ -60,6 +60,8 @@
   "failedToPickFile": "Failed to select file.",
   "general": "General",
   "keepScreenOn": "Keep Screen On",
+  "ambientMode": "Ambient Mode",
+  "ambientModeInfo": "A minimal, high-contrast UI that keeps the screen on while the timer is running, perfect for desk use.",
   "soundEffects": "Sound Effects",
   "vibration": "Vibration",
   "dndToggle": "Do Not Disturb",
@@ -264,6 +266,12 @@
   "customIntervalTitle": "Custom Reminder",
   "invalidInterval": "Enter a time between 5 and 480 minutes",
   "waterReminderIntervalSet": "You'll be reminded every {minutes} minutes",
+  "@waterReminderIntervalSet": {
+    "description": "TODO: Needs plural forms for 'minutes'. Current: 'every {minutes} minutes' (many). Should be: 'every {minutes, plural, one{{minutes} minute} other{{minutes} minutes}}'",
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "waterReminderNotificationTitle": "💧 Time for water",
   "waterReminderNotificationBody": "A quick sip keeps you at your best",
   "waterReminderAlarmTitle": "💙 Stay hydrated",

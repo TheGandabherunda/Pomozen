@@ -19,19 +19,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
   late final PomodoroController _pomodoroController;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    PomodoroScreen(),
+    const PomodoroScreen(),
     const StatisticsScreen(),
   ];
 
   void _onItemTapped(int index) {
-    if (_selectedIndex != index) {
-      setState(() {
-        _selectedIndex = index;
-      });
+    if (_pomodoroController.currentTabIndex.value != index) {
+      _pomodoroController.currentTabIndex.value = index;
     }
   }
 
@@ -54,82 +51,89 @@ class _HomeScreenState extends State<HomeScreen> {
     final appColors = AppTheme.colorsOf(context);
     final localizations = AppLocalizations.of(context)!;
 
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: appColors.grey7,
-          body: _widgetOptions.elementAt(_selectedIndex),
-          bottomNavigationBar: SizedBox(
-            height: 88,
-            child: BottomAppBar(
-              color: appColors.grey7,
-              elevation: 0,
-              padding: EdgeInsets.zero,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Tooltip(
-                    message: localizations.pomodoroTimer,
-                    child: InkWell(
-                      onTap: () => _onItemTapped(0),
-                      borderRadius: BorderRadius.circular(24),
-                      child: SizedBox(
-                        height: 48,
-                        width: 48,
-                        child: Center(
-                          child: Icon(
-                            _selectedIndex == 0
-                                ? Icons.timer_rounded
-                                : Icons.timer_outlined,
-                            size: 24,
-                            color: _selectedIndex == 0
-                                ? appColors.grey10
-                                : appColors.grey3,
-                          ),
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    return Obx(() => Stack(
+          children: [
+            Scaffold(
+              backgroundColor: appColors.grey7,
+              body: _widgetOptions
+                  .elementAt(_pomodoroController.currentTabIndex.value),
+              bottomNavigationBar: _pomodoroController.isAmbientMode.value
+                  ? const SizedBox.shrink()
+                  : SizedBox(
+                      height: isLandscape ? 56 : 88,
+                      child: BottomAppBar(
+                        color: appColors.grey7,
+                        elevation: 0,
+                        padding: EdgeInsets.zero,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Tooltip(
+                              message: localizations.pomodoroTimer,
+                              child: InkWell(
+                                onTap: () => _onItemTapped(0),
+                                borderRadius: BorderRadius.circular(24),
+                                child: SizedBox(
+                                  height: 48,
+                                  width: 48,
+                                  child: Center(
+                                    child: Icon(
+                                      _pomodoroController.currentTabIndex.value == 0
+                                          ? Icons.timer_rounded
+                                          : Icons.timer_outlined,
+                                      size: 24,
+                                      color: _pomodoroController
+                                                  .currentTabIndex.value ==
+                                              0
+                                          ? appColors.grey10
+                                          : appColors.grey3,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Tooltip(
+                              message: localizations.statistics,
+                              child: InkWell(
+                                onTap: () => _onItemTapped(1),
+                                borderRadius: BorderRadius.circular(24),
+                                child: SizedBox(
+                                  height: 48,
+                                  width: 48,
+                                  child: Center(
+                                    child: Icon(
+                                      _pomodoroController.currentTabIndex.value == 1
+                                          ? Icons.insert_chart_rounded
+                                          : Icons.insert_chart_outlined,
+                                      size: 24,
+                                      color: _pomodoroController
+                                                  .currentTabIndex.value ==
+                                              1
+                                          ? appColors.grey10
+                                          : appColors.grey3,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  Tooltip(
-                    message: localizations.statistics,
-                    child: InkWell(
-                      onTap: () => _onItemTapped(1),
-                      borderRadius: BorderRadius.circular(24),
-                      child: SizedBox(
-                        height: 48,
-                        width: 48,
-                        child: Center(
-                          child: Icon(
-                            _selectedIndex == 1
-                                ? Icons.insert_chart_rounded
-                                : Icons.insert_chart_outlined,
-                            size: 24,
-                            color: _selectedIndex == 1
-                                ? appColors.grey10
-                                : appColors.grey3,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
-          ),
-        ),
-        // Ripple Effect Overlay
-        Obx(
-              () => _pomodoroController.triggerRippleAnimation.value
-              ? AppleStyleRippleOverlay(
-            key: UniqueKey(),
-            onAnimationComplete: () {
-              _pomodoroController.acknowledgeRippleAnimation();
-            },
-          )
-              : const SizedBox.shrink(),
-        ),
-      ],
-    );
+            // Ripple Effect Overlay
+            if (_pomodoroController.triggerRippleAnimation.value)
+              AppleStyleRippleOverlay(
+                key: UniqueKey(),
+                onAnimationComplete: () {
+                  _pomodoroController.acknowledgeRippleAnimation();
+                },
+              ),
+          ],
+        ));
   }
 }
 

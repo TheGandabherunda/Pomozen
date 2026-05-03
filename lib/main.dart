@@ -97,6 +97,7 @@ class MyApp extends StatelessWidget {
           Locale('en', ''),
           Locale('kn', ''),
           Locale('hi', ''),
+          Locale('uk', ''),
         ],
 
         // Routing Configuration
