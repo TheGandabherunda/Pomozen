@@ -8,6 +8,9 @@
   <a href="https://shields.rbtlog.dev/org.projectsolutus.pomozen">
     <img src="https://shields.rbtlog.dev/simple/org.projectsolutus.pomozen" alt="RB shield">
   </a>
+  <a href="https://apt.izzysoft.de/packages/org.projectsolutus.pomozen">
+    <img src="https://img.shields.io/badge/dynamic/json?url=https://dlstats.izzyondroid.org/iod-stats-collector/stats/basic/yearly/rolling.json&query=$.['org.projectsolutus.pomozen']&label=IzzyOnDroid%20yearly%20downloads&style=flat-square" alt="IzzyOnDroid yearly downloads">
+  </a>
 </p>
 
 <p>
