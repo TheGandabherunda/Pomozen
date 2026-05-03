@@ -394,6 +394,18 @@ abstract class AppLocalizations {
   /// **'Keep Screen On'**
   String get keepScreenOn;
 
+  /// No description provided for @ambientMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Ambient Mode'**
+  String get ambientMode;
+
+  /// No description provided for @ambientModeInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'A minimal, high-contrast UI that keeps the screen on while the timer is running, perfect for desk use.'**
+  String get ambientModeInfo;
+
   /// No description provided for @soundEffects.
   ///
   /// In en, this message translates to:

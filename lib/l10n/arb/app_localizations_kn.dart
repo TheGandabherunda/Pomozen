@@ -175,6 +175,13 @@ class AppLocalizationsKn extends AppLocalizations {
   String get keepScreenOn => 'ಸ್ಕ್ರೀನ್ ಆನ್ ಇರಿಸಿ';
 
   @override
+  String get ambientMode => 'ಆಂಬಿಯೆಂಟ್ ಮೋಡ್';
+
+  @override
+  String get ambientModeInfo =>
+      'ಟೈಮರ್ ಚಾಲನೆಯಲ್ಲಿರುವಾಗ ಸ್ಕ್ರೀನ್ ಅನ್ನು ಆನ್ ಆಗಿ ಇರಿಸುವ ಮಿನಿಮಲ್, ಹೈ-ಕಾಂಟ್ರಾಸ್ಟ್ UI, ಇದು ಡೆಸ್ಕ್ ಬಳಕೆಗೆ ಸೂಕ್ತವಾಗಿದೆ.';
+
+  @override
   String get soundEffects => 'ಧ್ವನಿ ಪರಿಣಾಮಗಳು';
 
   @override

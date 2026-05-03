@@ -43,6 +43,8 @@ class PomodoroController extends GetxController with WidgetsBindingObserver {
   final currentLabel = Rxn<Map<String, dynamic>>();
   final RxBool triggerRippleAnimation = false.obs;
   final RxBool triggerAppStartAnimation = false.obs;
+  final RxBool isAmbientMode = false.obs;
+  final RxInt currentTabIndex = 0.obs;
 
   // Timers
   Timer? _timer;

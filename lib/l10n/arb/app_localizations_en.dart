@@ -173,6 +173,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get keepScreenOn => 'Keep Screen On';
 
   @override
+  String get ambientMode => 'Ambient Mode';
+
+  @override
+  String get ambientModeInfo =>
+      'A minimal, high-contrast UI that keeps the screen on while the timer is running, perfect for desk use.';
+
+  @override
   String get soundEffects => 'Sound Effects';
 
   @override

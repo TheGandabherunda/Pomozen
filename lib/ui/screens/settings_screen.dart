@@ -2204,6 +2204,14 @@ class _PomodoroSettingsScreenState extends State<PomodoroSettingsScreen>
                     )),
                     Obx(() => _buildSwitchSetting(
                       context: context,
+                      title: localizations.ambientMode ?? 'Ambient Mode',
+                      value: controller.settingsService.ambientMode.value,
+                      onChanged: (value) {
+                        controller.settingsService.setAmbientMode(value);
+                      },
+                    )),
+                    Obx(() => _buildSwitchSetting(
+                      context: context,
                       title: localizations.dndToggle,
                       value: controller.settingsService.dndToggle.value,
                       onChanged: (value) {

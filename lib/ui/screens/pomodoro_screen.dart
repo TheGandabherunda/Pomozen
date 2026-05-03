@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,11 +8,12 @@ import 'package:pomozen/controllers/pomodoro_controller.dart';
 import 'package:pomozen/ui/themes/app_theme.dart';
 import 'package:pomozen/ui/widget/custom_button.dart';
 import 'package:pomozen/ui/widget/custom_text_field.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../l10n/arb/app_localizations.dart';
 
 class PomodoroScreen extends StatefulWidget {
-  PomodoroScreen({super.key});
+  const PomodoroScreen({super.key});
 
   @override
   State<PomodoroScreen> createState() => _PomodoroScreenState();
@@ -28,6 +31,7 @@ class _PomodoroScreenState extends State<PomodoroScreen>
 
   late PomodoroController controller;
   FixedExtentScrollController? _wheelController;
+  Timer? _ambientTransitionTimer;
 
   // Animation Controllers
   late AnimationController _resetButtonAnimationController;
@@ -153,6 +157,47 @@ class _PomodoroScreenState extends State<PomodoroScreen>
         });
       }
     }
+
+    // NEW: Auto-ambient mode listener
+    ever(controller.isRunning, (bool running) {
+      if (running &&
+          controller.settingsService.ambientMode.value &&
+          controller.currentTabIndex.value == 0) {
+        _startAmbientTimer();
+      } else {
+        _cancelAmbientTimer();
+      }
+    });
+
+    // NEW: Tab switch listener to cancel ambient timer
+    ever(controller.currentTabIndex, (int index) {
+      if (index != 0) {
+        _cancelAmbientTimer();
+      } else if (controller.isRunning.value &&
+          controller.settingsService.ambientMode.value) {
+        _startAmbientTimer();
+      }
+    });
+  }
+
+  void _startAmbientTimer() {
+    _ambientTransitionTimer?.cancel();
+    _ambientTransitionTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted &&
+          controller.isRunning.value &&
+          controller.settingsService.ambientMode.value &&
+          controller.currentTabIndex.value == 0 &&
+          !controller.isAmbientMode.value) {
+        HapticFeedback.mediumImpact();
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+        controller.isAmbientMode.value = true;
+      }
+    });
+  }
+
+  void _cancelAmbientTimer() {
+    _ambientTransitionTimer?.cancel();
+    _ambientTransitionTimer = null;
   }
 
   int _getLabelIndex(List<Map<String, dynamic>> labels,
@@ -164,6 +209,7 @@ class _PomodoroScreenState extends State<PomodoroScreen>
 
   @override
   void dispose() {
+    _cancelAmbientTimer();
     // Dispose animation controllers
     _resetButtonAnimationController.dispose();
     _playPauseButtonAnimationController.dispose();
@@ -232,100 +278,106 @@ class _PomodoroScreenState extends State<PomodoroScreen>
     final appColors = AppTheme.colorsOf(context);
     final localizations = AppLocalizations.of(context);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: appColors.grey7,
-      appBar: AppBar(
+    return Obx(() {
+      if (controller.isAmbientMode.value) {
+        return _buildAmbientModeUI(context);
+      }
+      return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: appColors.grey7,
-        title: Text(
-          localizations.pomodoroTimer,
-          style: TextStyle(
-            fontFamily: 'OpenRunde',
-            fontSize: 24,
-            height: 1.6,
-            letterSpacing: -0.4,
-            color: appColors.grey10,
-            fontWeight: FontWeight.w600,
+        appBar: AppBar(
+          backgroundColor: appColors.grey7,
+          title: Text(
+            localizations.pomodoroTimer,
+            style: TextStyle(
+              fontFamily: 'OpenRunde',
+              fontSize: 24,
+              height: 1.6,
+              letterSpacing: -0.4,
+              color: appColors.grey10,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        actions: [
+          actions: [
           IconButton(
             icon: Icon(
-              Icons.more_vert_rounded,
-              color: appColors.primary,
-              size: 24,
+                Icons.more_vert_rounded,
+                color: appColors.primary,
+                size: 24,
+              ),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                Get.toNamed('/settings');
+              },
             ),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              Get.toNamed('/settings');
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          child: AnimatedBuilder(
+            animation: _screenShrinkScaleAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _screenShrinkScaleAnimation.value,
+                child: child,
+              );
             },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-        child: AnimatedBuilder(
-          animation: _screenShrinkScaleAnimation,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _screenShrinkScaleAnimation.value,
-              child: child,
-            );
-          },
-          child: OrientationBuilder(
-            builder: (context, orientation) {
-              if (orientation == Orientation.portrait) {
-                return SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Obx(() => _buildCupertinoLabelPicker(
-                          context, appColors, localizations)),
-                      const SizedBox(height: 80),
-                      _buildTimer(context, 280),
-                      const SizedBox(height: 24),
-                      _buildControls(context, appColors, localizations),
-                      _buildSessionProgress(context, appColors, localizations),
-                    ],
-                  ),
-                );
-              } else {
-                return SingleChildScrollView(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Center(
+            child: OrientationBuilder(
+              builder: (context, orientation) {
+                if (orientation == Orientation.portrait) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Obx(() => _buildCupertinoLabelPicker(
+                            context, appColors, localizations)),
+                        const SizedBox(height: 80),
+                        _buildTimer(context, 280),
+                        const SizedBox(height: 24),
+                        _buildControls(context, appColors, localizations),
+                        _buildSessionProgress(
+                            context, appColors, localizations),
+                      ],
+                    ),
+                  );
+                } else {
+                  return SingleChildScrollView(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Obx(() => _buildCupertinoLabelPicker(
+                                    context, appColors, localizations)),
+                                _buildTimer(context, 180),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        Expanded(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Obx(() => _buildCupertinoLabelPicker(
-                                  context, appColors, localizations)),
-                              _buildTimer(context, 180),
+                              _buildControls(context, appColors, localizations),
+                              _buildSessionProgress(
+                                  context, appColors, localizations),
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 24),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _buildControls(context, appColors, localizations),
-                            _buildSessionProgress(
-                                context, appColors, localizations),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-            },
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildTimer(BuildContext context, double size) {
@@ -513,7 +565,6 @@ class _PomodoroScreenState extends State<PomodoroScreen>
       ],
     );
   }
-
 
   // Dialogs
   Future<void> _showAddLabelDialog(BuildContext context) async {
@@ -1520,6 +1571,81 @@ class _PomodoroScreenState extends State<PomodoroScreen>
       ),
     );
   }
+
+  Widget _buildAmbientModeUI(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          HapticFeedback.lightImpact();
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+          controller.isAmbientMode.value = false;
+          if (controller.isRunning.value &&
+              controller.settingsService.ambientMode.value) {
+            _startAmbientTimer(); // Restart timer if user manually exited but timer is still running
+          }
+        },
+        child: Center(
+          child: Obx(() {
+            Color activeColor;
+            switch (controller.currentMode.value) {
+              case PomodoroMode.focus:
+                activeColor = Colors.white;
+                break;
+              case PomodoroMode.shortBreak:
+                activeColor = Colors.white70;
+                break;
+              case PomodoroMode.longBreak:
+                activeColor = Colors.white60;
+                break;
+            }
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _formatTime(controller.currentTime.value),
+                  style: const TextStyle(
+                    fontFamily: 'OpenRunde',
+                    fontSize: 100,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  _getModeText(controller.currentMode.value, localizations)
+                      .toUpperCase(),
+                  style: TextStyle(
+                    fontFamily: 'OpenRunde',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 4,
+                    color: activeColor,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  localizations.sessionOfSessions(
+                    controller.currentSession.value,
+                    controller.totalSessions.value,
+                  ),
+                  style: const TextStyle(
+                    fontFamily: 'OpenRunde',
+                    fontSize: 16,
+                    color: Colors.white38,
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
+  }
 }
 
 // Widgets
@@ -1539,7 +1665,7 @@ class AnimatedCustomButton extends StatefulWidget {
   final RxBool? isEnabled;
 
   const AnimatedCustomButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.text,
     required this.color,
@@ -1550,7 +1676,7 @@ class AnimatedCustomButton extends StatefulWidget {
     this.borderRadius = 8,
     this.textPadding = const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
     this.isEnabled,
-  }) : super(key: key);
+  });
 
   @override
   _AnimatedCustomButtonState createState() => _AnimatedCustomButtonState();
@@ -1645,7 +1771,7 @@ class AnimatedColorBox extends StatelessWidget {
   final Animation<double> scaleAnimation;
 
   const AnimatedColorBox({
-    Key? key,
+    super.key,
     required this.color,
     required this.isSelected,
     required this.appColors,
@@ -1654,7 +1780,7 @@ class AnimatedColorBox extends StatelessWidget {
     required this.onTapUp,
     required this.onTapCancel,
     required this.scaleAnimation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

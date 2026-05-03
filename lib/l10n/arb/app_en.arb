@@ -60,6 +60,8 @@
   "failedToPickFile": "Failed to select file.",
   "general": "General",
   "keepScreenOn": "Keep Screen On",
+  "ambientMode": "Ambient Mode",
+  "ambientModeInfo": "A minimal, high-contrast UI that keeps the screen on while the timer is running, perfect for desk use.",
   "soundEffects": "Sound Effects",
   "vibration": "Vibration",
   "dndToggle": "Do Not Disturb",
