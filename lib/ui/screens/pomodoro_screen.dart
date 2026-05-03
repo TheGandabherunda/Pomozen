@@ -341,35 +341,44 @@ class _PomodoroScreenState extends State<PomodoroScreen>
                     ),
                   );
                 } else {
-                  return SingleChildScrollView(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Obx(() => _buildCupertinoLabelPicker(
-                                    context, appColors, localizations)),
-                                _buildTimer(context, 180),
-                              ],
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      // Main Content (Timer and Controls) centered
+                      Center(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: _buildTimer(context, 220),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 24),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _buildControls(context, appColors, localizations),
+                                  _buildSessionProgress(
+                                      context, appColors, localizations),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 24),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildControls(context, appColors, localizations),
-                              _buildSessionProgress(
-                                  context, appColors, localizations),
-                            ],
-                          ),
+                      ),
+                      // Positioned Label Picker at the top center
+                      Positioned(
+                        top: -8,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Obx(() => _buildCupertinoLabelPicker(
+                              context, appColors, localizations)),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 }
               },
