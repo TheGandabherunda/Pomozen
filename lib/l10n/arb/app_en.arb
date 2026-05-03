@@ -266,6 +266,12 @@
   "customIntervalTitle": "Custom Reminder",
   "invalidInterval": "Enter a time between 5 and 480 minutes",
   "waterReminderIntervalSet": "You'll be reminded every {minutes} minutes",
+  "@waterReminderIntervalSet": {
+    "description": "TODO: Needs plural forms for 'minutes'. Current: 'every {minutes} minutes' (many). Should be: 'every {minutes, plural, one{{minutes} minute} other{{minutes} minutes}}'",
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "waterReminderNotificationTitle": "💧 Time for water",
   "waterReminderNotificationBody": "A quick sip keeps you at your best",
   "waterReminderAlarmTitle": "💙 Stay hydrated",
